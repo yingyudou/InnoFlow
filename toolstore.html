@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具商店 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 工具商店</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <div class="section-header" style="margin-bottom: 0;">
+                <h1 style="white-space: nowrap; flex-shrink: 0; margin: 0; font-size: 36px; font-weight: 700;">
+                    工具商店 <span style="font-size: 18px; font-weight: 400; color: var(--text-secondary);">发现和安装创新工具插件</span>
+                </h1>
+                <button class="btn-primary" onclick="showUploadModal()" style="flex-shrink: 0; white-space: nowrap; padding: 6px 12px; font-size: 13px; width: auto !important; min-width: auto;">
+                    📤 上传工具
+                </button>
+            </div>
+        </div>
+        
+        <div class="toolstore-grid" id="toolstoreGrid">
+            <!-- 工具卡片将由 JS 动态生成 -->
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/toolstore.js"></script>
+</body>
+</html>
+

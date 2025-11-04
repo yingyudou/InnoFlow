@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定义阶段 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 定义阶段</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 id="projectTitle">智能家居控制系统</h1>
+            <p class="page-subtitle">需求分析与方案设计</p>
+        </div>
+        
+        <div class="define-content">
+            <div class="define-section">
+                <div class="section-header">
+                    <h2>📋 需求文档</h2>
+                    <button class="btn-primary" onclick="alert('创建文档功能（演示版）')">+ 新建文档</button>
+                </div>
+                
+                <div class="document-list">
+                    <div class="document-card">
+                        <div class="doc-icon">📄</div>
+                        <div class="doc-info">
+                            <div class="doc-name">产品需求文档 v1.0</div>
+                            <div class="doc-meta">更新于 2025-10-20 · 张伟</div>
+                        </div>
+                        <button class="btn-secondary" onclick="alert('查看文档（演示版）')">查看</button>
+                    </div>
+                    
+                    <div class="document-card">
+                        <div class="doc-icon">📐</div>
+                        <div class="doc-info">
+                            <div class="doc-name">技术架构设计</div>
+                            <div class="doc-meta">更新于 2025-10-22 · 李娜</div>
+                        </div>
+                        <button class="btn-secondary" onclick="alert('查看文档（演示版）')">查看</button>
+                    </div>
+                    
+                    <div class="document-card">
+                        <div class="doc-icon">🎨</div>
+                        <div class="doc-info">
+                            <div class="doc-name">UI/UX设计规范</div>
+                            <div class="doc-meta">更新于 2025-10-25 · 刘洋</div>
+                        </div>
+                        <button class="btn-secondary" onclick="alert('查看文档（演示版）')">查看</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="define-section">
+                <div class="section-header">
+                    <h2>✅ 任务清单</h2>
+                </div>
+                
+                <div class="task-list-define">
+                    <div class="task-item-define completed">
+                        <input type="checkbox" checked disabled>
+                        <label>完成用户调研</label>
+                        <span class="task-status">已完成</span>
+                    </div>
+                    <div class="task-item-define completed">
+                        <input type="checkbox" checked disabled>
+                        <label>编写产品需求文档</label>
+                        <span class="task-status">已完成</span>
+                    </div>
+                    <div class="task-item-define completed">
+                        <input type="checkbox" checked disabled>
+                        <label>设计技术架构</label>
+                        <span class="task-status">已完成</span>
+                    </div>
+                    <div class="task-item-define">
+                        <input type="checkbox" disabled>
+                        <label>评审设计方案</label>
+                        <span class="task-status active">进行中</span>
+                    </div>
+                    <div class="task-item-define">
+                        <input type="checkbox" disabled>
+                        <label>确定最终方案</label>
+                        <span class="task-status pending">待开始</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="define-section">
+                <div class="section-header">
+                    <h2>💡 方案对比</h2>
+                </div>
+                
+                <div class="solution-comparison">
+                    <div class="solution-card">
+                        <h3>方案A：单体架构</h3>
+                        <ul>
+                            <li>✅ 开发快速</li>
+                            <li>✅ 部署简单</li>
+                            <li>❌ 扩展性较差</li>
+                            <li>❌ 维护成本高</li>
+                        </ul>
+                        <div class="solution-vote">投票: 2票</div>
+                    </div>
+                    
+                    <div class="solution-card recommended">
+                        <h3>方案B：微服务架构 ⭐</h3>
+                        <ul>
+                            <li>✅ 高扩展性</li>
+                            <li>✅ 独立部署</li>
+                            <li>✅ 易于维护</li>
+                            <li>❌ 开发周期较长</li>
+                        </ul>
+                        <div class="solution-vote">投票: 6票（推荐）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

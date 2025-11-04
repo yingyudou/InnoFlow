@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档生成器 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 文档生成器</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container tool-page">
+        <div class="page-header" style="margin-bottom: 20px;">
+            <h1 id="projectTitle" style="font-size: 24px; margin-bottom: 4px;">智能家居控制系统</h1>
+        </div>
+        <div class="tool-header">
+            <h1>📝 文档生成器</h1>
+            <p class="tool-subtitle">自动分析代码和注释，生成完整的项目文档</p>
+        </div>
+        
+        <div class="tool-content">
+            <div class="docgen-section">
+                <div class="section-header">
+                    <h2>选择文档类型</h2>
+                </div>
+                
+                <div class="doc-type-grid">
+                    <div class="doc-type-card" data-type="api" onclick="selectDocType('api', this)">
+                        <div class="doc-type-icon">🔌</div>
+                        <div class="doc-type-name">API 文档</div>
+                        <div class="doc-type-desc">自动生成接口文档</div>
+                    </div>
+                    
+                    <div class="doc-type-card" data-type="readme" onclick="selectDocType('readme', this)">
+                        <div class="doc-type-icon">📖</div>
+                        <div class="doc-type-name">README</div>
+                        <div class="doc-type-desc">项目说明文档</div>
+                    </div>
+                    
+                    <div class="doc-type-card" data-type="architecture" onclick="selectDocType('architecture', this)">
+                        <div class="doc-type-icon">🏗️</div>
+                        <div class="doc-type-name">架构文档</div>
+                        <div class="doc-type-desc">系统架构设计</div>
+                    </div>
+                    
+                    <div class="doc-type-card" data-type="user-guide" onclick="selectDocType('user-guide', this)">
+                        <div class="doc-type-icon">📘</div>
+                        <div class="doc-type-name">用户手册</div>
+                        <div class="doc-type-desc">使用指南文档</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="docgen-section" id="generateSection" style="display: none;">
+                <div class="section-header">
+                    <h2>生成配置</h2>
+                </div>
+                
+                <div class="config-form">
+                    <div class="form-group">
+                        <label>文档标题</label>
+                        <input type="text" id="docTitle" placeholder="智能家居控制系统 API 文档" value="智能家居控制系统 API 文档">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>扫描目录</label>
+                        <div class="path-input">
+                            <input type="text" id="scanPath" placeholder="src/" value="src/">
+                            <button class="btn-secondary" onclick="alert('浏览目录（演示版）')">浏览</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>输出格式</label>
+                        <div class="format-options">
+                            <label class="format-option">
+                                <input type="radio" name="format" value="markdown" checked>
+                                <span>Markdown</span>
+                            </label>
+                            <label class="format-option">
+                                <input type="radio" name="format" value="html">
+                                <span>HTML</span>
+                            </label>
+                            <label class="format-option">
+                                <input type="radio" name="format" value="pdf">
+                                <span>PDF</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" id="generateDocBtn" onclick="generateDocument()" style="width: 100%;">
+                        🚀 生成文档
+                    </button>
+                </div>
+            </div>
+            
+            <div class="docgen-section" id="resultSection" style="display: none;">
+                <div class="section-header">
+                    <h2>生成结果</h2>
+                    <div>
+                        <button class="btn-secondary" onclick="downloadDoc()">📥 下载文档</button>
+                        <button class="btn-secondary" onclick="previewDoc()">👁️ 预览</button>
+                    </div>
+                </div>
+                
+                <div class="doc-result">
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">扫描文件</span>
+                            <span class="stat-value" id="filesScanned">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">生成章节</span>
+                            <span class="stat-value" id="sectionsGenerated">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">文档大小</span>
+                            <span class="stat-value" id="docSize">0 KB</span>
+                        </div>
+                    </div>
+                    
+                    <div class="doc-preview" id="docPreview">
+                        <!-- 文档预览内容 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/docgen.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

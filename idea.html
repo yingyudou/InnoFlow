@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Idea 中心 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 发现阶段</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container idea-page">
+        <div class="page-header" style="margin-bottom: 20px;">
+            <h1 id="projectTitle" style="font-size: 24px; margin-bottom: 4px;">智能家居控制系统</h1>
+        </div>
+        <div class="idea-toolbar">
+            <div class="search-box">
+                <input type="text" placeholder="搜索想法..." class="search-input">
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <div class="toolbar-actions">
+                <button class="btn-secondary" onclick="alert('添加 Idea 功能（演示版）')">
+                    + 添加 Idea
+                </button>
+                <button class="btn-primary" id="clusterBtn">
+                    🤖 AI 聚类
+                </button>
+            </div>
+        </div>
+        
+        <div class="idea-content">
+            <div class="idea-cluster-view">
+                <canvas id="clusterCanvas"></canvas>
+            </div>
+            
+            <div class="idea-detail-panel" id="detailPanel">
+                <div class="detail-empty">
+                    <p>👈 点击气泡查看 Idea 详情</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/subscription.js"></script>
+    <script src="js/idea.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

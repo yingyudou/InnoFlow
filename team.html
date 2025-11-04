@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队协作 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 团队协作</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 id="projectTitle">智能家居控制系统</h1>
+            <p class="page-subtitle">团队协作与管理</p>
+        </div>
+        
+        <div class="team-content">
+            <div class="team-section">
+                <div class="section-header">
+                    <h2>👥 团队成员</h2>
+                    <button class="btn-primary" onclick="alert('邀请成员功能（演示版）')">+ 邀请成员</button>
+                </div>
+                
+                <div class="team-member-list">
+                    <div class="member-card">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%235B4FE8'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E张%3C/text%3E%3C/svg%3E" alt="张伟">
+                        <div class="member-info">
+                            <div class="member-name">张伟 <span class="member-role">负责人</span></div>
+                            <div class="member-email">zhangwei@example.com</div>
+                            <div class="member-stats">💡 12 个想法 · 📝 8 次提交</div>
+                        </div>
+                    </div>
+                    
+                    <div class="member-card">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23F03D8E'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E李%3C/text%3E%3C/svg%3E" alt="李娜">
+                        <div class="member-info">
+                            <div class="member-name">李娜 <span class="member-role">开发者</span></div>
+                            <div class="member-email">lina@example.com</div>
+                            <div class="member-stats">💡 8 个想法 · 📝 15 次提交</div>
+                        </div>
+                    </div>
+                    
+                    <div class="member-card">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2300D4AA'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E王%3C/text%3E%3C/svg%3E" alt="王强">
+                        <div class="member-info">
+                            <div class="member-name">王强 <span class="member-role">开发者</span></div>
+                            <div class="member-email">wangqiang@example.com</div>
+                            <div class="member-stats">💡 5 个想法 · 📝 9 次提交</div>
+                        </div>
+                    </div>
+                    
+                    <div class="member-card">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23FF9F1C'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E刘%3C/text%3E%3C/svg%3E" alt="刘洋">
+                        <div class="member-info">
+                            <div class="member-name">刘洋 <span class="member-role">设计师</span></div>
+                            <div class="member-email">liuyang@example.com</div>
+                            <div class="member-stats">💡 3 个想法 · 📝 2 次提交</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team-section">
+                <div class="section-header">
+                    <h2>📋 任务分配</h2>
+                </div>
+                
+                <div class="task-board">
+                    <div class="task-column">
+                        <h3>待办</h3>
+                        <div class="task-list">
+                            <div class="task-item">
+                                <div class="task-title">完成UI设计稿</div>
+                                <div class="task-assignee">分配给: 刘洋</div>
+                                <div class="task-due">截止: 2025-11-15</div>
+                            </div>
+                            <div class="task-item">
+                                <div class="task-title">集成第三方API</div>
+                                <div class="task-assignee">分配给: 王强</div>
+                                <div class="task-due">截止: 2025-11-20</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-column">
+                        <h3>进行中</h3>
+                        <div class="task-list">
+                            <div class="task-item">
+                                <div class="task-title">开发语音控制模块</div>
+                                <div class="task-assignee">分配给: 张伟</div>
+                                <div class="task-progress">进度: 60%</div>
+                            </div>
+                            <div class="task-item">
+                                <div class="task-title">编写测试用例</div>
+                                <div class="task-assignee">分配给: 李娜</div>
+                                <div class="task-progress">进度: 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-column">
+                        <h3>已完成</h3>
+                        <div class="task-list">
+                            <div class="task-item completed">
+                                <div class="task-title">需求分析文档</div>
+                                <div class="task-assignee">完成者: 张伟</div>
+                                <div class="task-completed">完成时间: 2025-10-20</div>
+                            </div>
+                            <div class="task-item completed">
+                                <div class="task-title">数据库设计</div>
+                                <div class="task-assignee">完成者: 李娜</div>
+                                <div class="task-completed">完成时间: 2025-10-25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // 设置项目名称
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

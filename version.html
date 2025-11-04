@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>版本控制 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 开发阶段</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container version-page">
+        <div class="page-header" style="margin-bottom: 30px;">
+            <h1 id="projectTitle">智能家居控制系统</h1>
+        </div>
+        <div class="version-header">
+            <div class="version-header-left">
+                <h2 style="font-size: 20px; margin-bottom: 8px;">版本历史与分支管理</h2>
+                <p class="version-subtitle">查看和管理项目版本历史</p>
+            </div>
+            
+            <div class="version-header-right">
+                <select class="branch-select" id="branchSelect">
+                    <option value="main">主分支 (main)</option>
+                    <option value="develop">开发分支 (develop)</option>
+                    <option value="feature-ui">功能分支 (feature-ui)</option>
+                    <option value="feature-api">功能分支 (feature-api)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="version-stats">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">提交次数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4</div>
+                <div class="stat-label">活跃分支</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">贡献者</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">v1.2.0</div>
+                <div class="stat-label">当前版本</div>
+            </div>
+        </div>
+        
+        <div class="version-tree-container">
+            <canvas id="versionCanvas"></canvas>
+        </div>
+    </div>
+    
+    <!-- 版本详情弹窗 -->
+    <div class="modal" id="versionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>版本详情</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态填充 -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/version.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目主页 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow</span>
+        </div>
+        
+        <div class="nav-center">
+            <div class="search-box">
+                <input type="text" placeholder="搜索项目..." class="search-input">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <button class="btn-secondary nav-subscribe-btn" onclick="window.location.href='subscription.html'" style="padding: 6px 14px; font-size: 13px;">
+                💎 订阅
+            </button>
+            <div class="user-avatar" onclick="window.location.href='profile.html'" style="cursor: pointer;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%235B4FE8'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E李%3C/text%3E%3C/svg%3E" alt="用户头像">
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>我的项目</h1>
+            <p class="page-subtitle">共 <span id="projectCount">6</span> 个创新项目正在进行</p>
+        </div>
+        
+        <div class="project-grid" id="projectGrid">
+            <!-- 项目卡片将由 JS 动态生成 -->
+        </div>
+    </div>
+    
+    <button class="fab" onclick="handleNewProject()">
+        <span class="fab-icon">+</span>
+    </button>
+    
+    <script src="js/subscription.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 确保函数在全局可用
+        window.handleNewProject = handleNewProject;
+    </script>
+</body>
+</html>
+

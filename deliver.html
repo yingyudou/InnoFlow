@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交付阶段 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 交付阶段</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 id="projectTitle">智能家居控制系统</h1>
+            <p class="page-subtitle">成果交付与推广应用</p>
+        </div>
+        
+        <div class="deliver-content">
+            <div class="deliver-section">
+                <div class="section-header">
+                    <h2>📦 交付物清单</h2>
+                    <button class="btn-primary" onclick="alert('创建交付物功能（演示版）')">+ 添加交付物</button>
+                </div>
+                
+                <div class="deliverable-list">
+                    <div class="deliverable-card">
+                        <div class="deliver-icon">📱</div>
+                        <div class="deliver-info">
+                            <div class="deliver-name">移动端应用</div>
+                            <div class="deliver-desc">iOS/Android 移动应用 v1.0</div>
+                            <div class="deliver-meta">状态: 开发中 · 预计: 2025-12-01</div>
+                        </div>
+                        <button class="btn-secondary" onclick="alert('查看详情（演示版）')">查看</button>
+                    </div>
+                    
+                    <div class="deliverable-card">
+                        <div class="deliver-icon">🌐</div>
+                        <div class="deliver-info">
+                            <div class="deliver-name">Web 管理平台</div>
+                            <div class="deliver-desc">后台管理系统 v1.0</div>
+                            <div class="deliver-meta">状态: 测试中 · 预计: 2025-11-25</div>
+                        </div>
+                        <button class="btn-secondary" onclick="alert('查看详情（演示版）')">查看</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="deliver-section">
+                <div class="section-header">
+                    <h2>🚀 发布计划</h2>
+                </div>
+                
+                <div class="release-timeline">
+                    <div class="release-item">
+                        <div class="release-date">2025-11-20</div>
+                        <div class="release-content">
+                            <h3>Alpha 版本发布</h3>
+                            <p>内部测试版本，核心功能验证</p>
+                        </div>
+                    </div>
+                    
+                    <div class="release-item">
+                        <div class="release-date">2025-12-01</div>
+                        <div class="release-content">
+                            <h3>Beta 版本发布</h3>
+                            <p>公开测试，收集用户反馈</p>
+                        </div>
+                    </div>
+                    
+                    <div class="release-item">
+                        <div class="release-date">2025-12-15</div>
+                        <div class="release-content">
+                            <h3>正式版发布</h3>
+                            <p>正式上线，全面推广</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="deliver-section">
+                <div class="section-header">
+                    <h2>📊 推广资源</h2>
+                </div>
+                
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon">📄</div>
+                        <div class="resource-name">产品手册</div>
+                        <button class="btn-secondary small" onclick="alert('下载（演示版）')">下载</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon">🎬</div>
+                        <div class="resource-name">演示视频</div>
+                        <button class="btn-secondary small" onclick="alert('观看（演示版）')">观看</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon">📢</div>
+                        <div class="resource-name">宣传材料</div>
+                        <button class="btn-secondary small" onclick="alert('下载（演示版）')">下载</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+

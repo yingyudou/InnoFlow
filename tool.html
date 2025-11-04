@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 会议助手 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - AI 会议助手</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
+        </div>
+    </nav>
+    
+    <div class="container tool-page">
+        <div class="page-header" style="margin-bottom: 20px;">
+            <h1 id="projectTitle" style="font-size: 24px; margin-bottom: 4px;">智能家居控制系统</h1>
+        </div>
+        <div class="tool-header">
+            <h1>🤖 AI 会议助手</h1>
+            <p class="tool-subtitle">上传会议录音，智能生成会议摘要与待办事项</p>
+        </div>
+        
+        <div class="tool-content">
+            <div class="upload-section">
+                <div class="upload-box" id="uploadBox">
+                    <div class="upload-icon">🎙️</div>
+                    <p class="upload-text">点击或拖拽上传会议录音文件</p>
+                    <p class="upload-hint">支持 MP3, WAV, M4A 格式</p>
+                    <input type="file" id="fileInput" accept="audio/*" style="display: none;">
+                </div>
+                
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-name" id="fileName"></div>
+                    <button class="btn-primary" id="generateBtn">生成摘要</button>
+                </div>
+            </div>
+            
+            <div class="summary-section" id="summarySection" style="display: none;">
+                <div class="summary-header">
+                    <h2>会议摘要</h2>
+                    <div class="summary-meta">
+                        <span>📅 <span id="meetingDate"></span></span>
+                        <span>⏱️ 时长: <span id="duration"></span></span>
+                        <span>👥 参与人数: <span id="participants"></span></span>
+                    </div>
+                </div>
+                
+                <div class="summary-content">
+                    <div class="summary-block">
+                        <h3>📋 核心要点</h3>
+                        <ul id="keyPoints"></ul>
+                    </div>
+                    
+                    <div class="summary-block">
+                        <h3>✅ 待办事项</h3>
+                        <ul id="todoItems"></ul>
+                    </div>
+                    
+                    <div class="summary-block">
+                        <h3>💡 创新建议</h3>
+                        <ul id="suggestions"></ul>
+                    </div>
+                </div>
+                
+                <div class="summary-actions">
+                    <button class="btn-primary" onclick="exportSummary()">
+                        📥 导出摘要
+                    </button>
+                    <button class="btn-secondary" onclick="resetTool()">
+                        🔄 重新上传
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/subscription.js"></script>
+    <script src="js/tool.js"></script>
+    <script>
+        const projectName = getUrlParameter('project') || '智能家居控制系统';
+        document.getElementById('projectTitle').textContent = projectName;
+    </script>
+</body>
+</html>
+
