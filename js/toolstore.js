@@ -38,9 +38,7 @@ const storeTools = [
         downloads: 567,
         rating: 4.6,
         isInstalled: false,
-        price: 99, // 付费
-        isPremium: true,
-        requiredPlan: 'pro' // 需要专业版
+        price: 99 // 付费
     },
     {
         id: 'test-automation',
@@ -52,9 +50,7 @@ const storeTools = [
         downloads: 789,
         rating: 4.7,
         isInstalled: false,
-        price: 149, // 付费
-        isPremium: true,
-        requiredPlan: 'pro' // 需要专业版
+        price: 149 // 付费
     },
     {
         id: 'performance-monitor',
@@ -66,9 +62,7 @@ const storeTools = [
         downloads: 623,
         rating: 4.4,
         isInstalled: false,
-        price: 79, // 付费
-        isPremium: true,
-        requiredPlan: 'pro' // 需要专业版
+        price: 79 // 付费
     },
     {
         id: 'api-tester',
@@ -80,9 +74,7 @@ const storeTools = [
         downloads: 456,
         rating: 4.6,
         isInstalled: false,
-        price: 129, // 付费
-        isPremium: true,
-        requiredPlan: 'pro' // 需要专业版
+        price: 129 // 付费
     }
 ];
 
@@ -99,17 +91,35 @@ document.addEventListener('DOMContentLoaded', function() {
 function checkInstalledStatus() {
     // 默认已安装的工具（演示项目默认安装）
     const defaultInstalled = ['ai-assistant', 'doc-generator'];
-    
+
     // 从 main.js 获取已安装的工具列表
     if (typeof installedTools !== 'undefined' && installedTools.length > 0) {
         storeTools.forEach(tool => {
             tool.isInstalled = installedTools.some(t => t.id === tool.id);
         });
+
+        // 同步已安装插件数量到订阅状态
+        if (typeof getCurrentSubscription !== 'undefined' && typeof currentSubscription !== 'undefined') {
+            const sub = getCurrentSubscription();
+            if (sub) {
+                sub.pluginsUsed = installedTools.length;
+                currentSubscription.pluginsUsed = installedTools.length;
+            }
+        }
     } else {
         // 如果 main.js 未加载，使用默认值
         storeTools.forEach(tool => {
             tool.isInstalled = defaultInstalled.includes(tool.id);
         });
+
+        // 同步默认安装数量
+        if (typeof getCurrentSubscription !== 'undefined' && typeof currentSubscription !== 'undefined') {
+            const sub = getCurrentSubscription();
+            if (sub) {
+                sub.pluginsUsed = defaultInstalled.length;
+                currentSubscription.pluginsUsed = defaultInstalled.length;
+            }
+        }
     }
 }
 
@@ -126,9 +136,9 @@ function getCurrentSubscriptionFromStore() {
 function initToolStore() {
     const grid = document.getElementById('toolstoreGrid');
     if (!grid) return;
-    
+
     grid.innerHTML = '';
-    
+
     storeTools.forEach(tool => {
         const card = createStoreToolCard(tool);
         grid.appendChild(card);
@@ -139,30 +149,16 @@ function initToolStore() {
 function createStoreToolCard(tool) {
     const card = document.createElement('div');
     card.className = 'store-tool-card';
-    
-    // 获取当前订阅状态
-    const currentSub = getCurrentSubscriptionFromStore();
-    const currentPlan = currentSub.plan || 'free';
-    const needsUpgrade = tool.requiredPlan && currentPlan !== 'pro' && currentPlan !== 'enterprise';
-    
+
     // 价格标签
-    const priceTag = tool.price > 0 
+    const priceTag = tool.price > 0
         ? `<div class="tool-price-tag">¥${tool.price}</div>`
         : `<div class="tool-price-tag free">免费</div>`;
-    
-    // 套餐要求标签
-    const planRequirement = tool.requiredPlan 
-        ? `<div class="plan-requirement">需要${tool.requiredPlan === 'pro' ? '专业版' : '企业版'}</div>`
-        : '';
-    
+
     // 安装按钮
     let installButton = '';
     if (tool.isInstalled) {
         installButton = `<button class="btn-primary installed" disabled>✓ 已安装</button>`;
-    } else if (needsUpgrade) {
-        installButton = `<button class="btn-primary" onclick="window.location.href='subscription.html'">
-            🔓 升级解锁
-        </button>`;
     } else if (tool.price > 0) {
         installButton = `<button class="btn-primary premium" onclick="handlePurchase('${tool.id}')">
             💳 购买并安装
@@ -170,10 +166,9 @@ function createStoreToolCard(tool) {
     } else {
         installButton = `<button class="btn-primary" onclick="handleInstall('${tool.id}')">安装</button>`;
     }
-    
+
     card.innerHTML = `
         ${priceTag}
-        ${planRequirement}
         <div class="store-tool-icon">${tool.icon}</div>
         <div class="store-tool-name">${tool.name}</div>
         <div class="store-tool-desc">${tool.description}</div>
@@ -189,7 +184,7 @@ function createStoreToolCard(tool) {
         <div class="store-tool-version">版本: ${tool.version}</div>
         ${installButton}
     `;
-    
+
     return card;
 }
 
@@ -197,12 +192,25 @@ function createStoreToolCard(tool) {
 function handleInstall(toolId) {
     const tool = storeTools.find(t => t.id === toolId);
     if (!tool) return;
-    
+
     if (tool.isInstalled) {
         alert('该工具已安装');
         return;
     }
-    
+
+    // 检查插件数量限制
+    if (typeof checkFeatureLimit !== 'undefined') {
+        const limit = checkFeatureLimit('plugins');
+        if (!limit.allowed) {
+            if (typeof showUpgradePrompt !== 'undefined') {
+                showUpgradePrompt('plugins');
+            } else {
+                alert('插件数量已达上限，请升级套餐以安装更多插件');
+            }
+            return;
+        }
+    }
+
     // 调用 main.js 中的安装函数
     if (typeof installTool !== 'undefined') {
         installTool({
@@ -244,7 +252,7 @@ function handlePurchase(toolId) {
         handleInstall(toolId);
         return;
     }
-    
+
     // 显示付费弹窗
     const paymentModal = document.createElement('div');
     paymentModal.className = 'modal active';
@@ -263,7 +271,7 @@ function handlePurchase(toolId) {
                         ¥${tool.price}
                     </div>
                 </div>
-                
+
                 <div style="margin-bottom: 24px;">
                     <h4 style="margin-bottom: 12px;">支付方式</h4>
                     <div class="payment-methods">
@@ -281,7 +289,7 @@ function handlePurchase(toolId) {
                         </label>
                     </div>
                 </div>
-                
+
                 <div style="display: flex; gap: 12px;">
                     <button class="btn-secondary" style="flex: 1;" onclick="this.closest('.modal').remove()">
                         取消
@@ -293,9 +301,9 @@ function handlePurchase(toolId) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(paymentModal);
-    
+
     // 点击外部关闭
     paymentModal.addEventListener('click', function(e) {
         if (e.target === paymentModal) {
@@ -308,14 +316,28 @@ function handlePurchase(toolId) {
 function confirmPurchase(toolId, modal) {
     const tool = storeTools.find(t => t.id === toolId);
     if (!tool) return;
-    
+
+    // 检查插件数量限制
+    if (typeof checkFeatureLimit !== 'undefined') {
+        const limit = checkFeatureLimit('plugins');
+        if (!limit.allowed) {
+            modal.remove();
+            if (typeof showUpgradePrompt !== 'undefined') {
+                showUpgradePrompt('plugins');
+            } else {
+                alert('插件数量已达上限，请升级套餐以安装更多插件');
+            }
+            return;
+        }
+    }
+
     const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-    
+
     // 模拟支付过程
     const btn = modal.querySelector('.btn-primary');
     btn.textContent = '支付中...';
     btn.disabled = true;
-    
+
     setTimeout(() => {
         // 支付成功，安装工具
         if (typeof installTool !== 'undefined') {
@@ -327,11 +349,11 @@ function confirmPurchase(toolId, modal) {
                 url: getToolUrl(tool.id)
             });
         }
-        
+
         tool.isInstalled = true;
         checkInstalledStatus();
         initToolStore();
-        
+
         modal.remove();
         alert(`🎉 支付成功！\n\n工具 "${tool.name}" 已安装到您的项目中。`);
     }, 1500);
@@ -339,6 +361,6 @@ function confirmPurchase(toolId, modal) {
 
 // 显示上传工具弹窗
 function showUploadModal() {
-    alert('上传工具功能（演示版）\n\n在这里可以上传您自制的工具插件，分享给其他团队使用。');
+    // 跳转到上传插件页面
+    window.location.href = 'developer/upload-plugin.html';
 }
-

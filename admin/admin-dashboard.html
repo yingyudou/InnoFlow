@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员仪表盘 - InnoFlow</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-nav-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge-nav {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .admin-sidebar {
+            width: 240px;
+            background: #f8f9fa;
+            min-height: calc(100vh - 64px);
+            padding: 24px 0;
+            border-right: 1px solid var(--border-color);
+        }
+        .admin-sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .admin-sidebar-item:hover {
+            background: #e9ecef;
+        }
+        .admin-sidebar-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .admin-content {
+            flex: 1;
+            padding: 32px;
+            background: #f8f9fa;
+        }
+        .admin-layout {
+            display: flex;
+        }
+        .stats-grid-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card-admin {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .stat-card-admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .stat-card-admin-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .stat-card-admin-icon {
+            font-size: 32px;
+        }
+        .stat-card-admin-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .stat-card-admin-change {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .quick-actions-admin {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 32px;
+        }
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .quick-action-btn {
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: block;
+        }
+        .quick-action-btn:hover {
+            border-color: var(--primary-color);
+            background: #f0f4ff;
+        }
+        .quick-action-btn-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .pending-items {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .pending-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pending-item:last-child {
+            border-bottom: none;
+        }
+        .pending-item-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+        }
+        .pending-item-info p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .pending-item-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <nav class="admin-nav">
+        <div class="admin-nav-left">
+            <img src="../assets/logo.svg" alt="InnoFlow" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+            <span class="admin-nav-title">InnoFlow 管理后台</span>
+            <span class="admin-badge-nav">管理员</span>
+        </div>
+        <div class="admin-nav-right">
+            <span id="adminUsername">管理员</span>
+            <button class="btn-secondary" onclick="logout()" style="background: rgba(255,255,255,0.2); color: white; border: none;">退出登录</button>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <a href="admin-dashboard.html" class="admin-sidebar-item active">
+                <span>📊</span>
+                <span>仪表盘</span>
+            </a>
+            <a href="admin-plugins.html" class="admin-sidebar-item">
+                <span>🔌</span>
+                <span>插件审核</span>
+            </a>
+            <a href="admin-users.html" class="admin-sidebar-item">
+                <span>👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="admin-finance.html" class="admin-sidebar-item">
+                <span>💳</span>
+                <span>财务管理</span>
+            </a>
+            <a href="admin-settings.html" class="admin-sidebar-item">
+                <span>⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </div>
+
+        <div class="admin-content">
+            <h1 style="margin-bottom: 32px;">管理仪表盘</h1>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid-admin">
+                <div class="stat-card-admin">
+                    <div class="stat-card-admin-header">
+                        <div class="stat-card-admin-title">待审核插件</div>
+                        <div class="stat-card-admin-icon">🔌</div>
+                    </div>
+                    <div class="stat-card-admin-value" id="pendingPlugins">8</div>
+                    <div class="stat-card-admin-change">较昨日 +2</div>
+                </div>
+
+                <div class="stat-card-admin">
+                    <div class="stat-card-admin-header">
+                        <div class="stat-card-admin-title">待定价协商</div>
+                        <div class="stat-card-admin-icon">💰</div>
+                    </div>
+                    <div class="stat-card-admin-value" id="pendingPricing">5</div>
+                    <div class="stat-card-admin-change">需要处理</div>
+                </div>
+
+                <div class="stat-card-admin">
+                    <div class="stat-card-admin-header">
+                        <div class="stat-card-admin-title">今日新增用户</div>
+                        <div class="stat-card-admin-icon">👥</div>
+                    </div>
+                    <div class="stat-card-admin-value" id="newUsers">23</div>
+                    <div class="stat-card-admin-change">较昨日 +5</div>
+                </div>
+
+                <div class="stat-card-admin">
+                    <div class="stat-card-admin-header">
+                        <div class="stat-card-admin-title">平台总收益</div>
+                        <div class="stat-card-admin-icon">💳</div>
+                    </div>
+                    <div class="stat-card-admin-value">¥12,450</div>
+                    <div class="stat-card-admin-change">本月累计</div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="quick-actions-admin">
+                <h2 style="margin-bottom: 16px;">快速操作</h2>
+                <div class="quick-actions-grid">
+                    <a href="admin-plugins.html" class="quick-action-btn">
+                        <div class="quick-action-btn-icon">🔍</div>
+                        <div>审核插件</div>
+                    </a>
+                    <a href="admin-users.html" class="quick-action-btn">
+                        <div class="quick-action-btn-icon">👤</div>
+                        <div>用户管理</div>
+                    </a>
+                    <a href="admin-finance.html" class="quick-action-btn">
+                        <div class="quick-action-btn-icon">💳</div>
+                        <div>财务管理</div>
+                    </a>
+                    <a href="admin-settings.html" class="quick-action-btn">
+                        <div class="quick-action-btn-icon">⚙️</div>
+                        <div>系统设置</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 待处理事项 -->
+            <div class="pending-items">
+                <h2 style="margin-bottom: 16px;">待处理事项</h2>
+                <div id="pendingList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script>
+        // 检查管理员登录状态
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // 显示管理员用户名
+        const adminUsername = sessionStorage.getItem('adminUsername') || '管理员';
+        document.getElementById('adminUsername').textContent = adminUsername;
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminUsername');
+                window.location.href = 'admin-login.html';
+            }
+        }
+        window.logout = logout;
+
+        // 加载待处理事项
+        function loadPendingItems() {
+            const pendingList = document.getElementById('pendingList');
+            const items = [
+                { type: 'plugin', title: 'AI代码审查工具', author: 'TechFlow团队', time: '2小时前', count: 8 },
+                { type: 'pricing', title: '性能监控插件', author: 'Metrics Lab', time: '5小时前', count: 5 },
+                { type: 'plugin', title: 'API测试工具', author: 'API Tools', time: '1天前', count: 3 }
+            ];
+
+            pendingList.innerHTML = items.map(item => `
+                <div class="pending-item">
+                    <div class="pending-item-info">
+                        <h4>${item.title}</h4>
+                        <p>上传者: ${item.author} · ${item.time}</p>
+                    </div>
+                    <div>
+                        <span class="pending-item-badge">待处理</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        loadPendingItems();
+    </script>
+</body>
+</html>

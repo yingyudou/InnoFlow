@@ -16,6 +16,10 @@ let userData = {
 document.addEventListener('DOMContentLoaded', function() {
     initProfile();
     updateStats();
+    // 加载开发者统计数据
+    if (typeof updateProfileStats !== 'undefined') {
+        updateProfileStats();
+    }
 });
 
 // 初始化个人页面
@@ -26,7 +30,7 @@ function initProfile() {
     document.getElementById('displayName').textContent = userData.name;
     document.getElementById('displayEmail').textContent = userData.email;
     document.getElementById('displayPhone').textContent = userData.phone;
-    
+
     // 更新订阅状态
     if (typeof getCurrentSubscription !== 'undefined') {
         const sub = getCurrentSubscription();
@@ -36,7 +40,7 @@ function initProfile() {
             if (planElement) {
                 planElement.textContent = planName;
             }
-            
+
             if (sub.endDate) {
                 const endDateElement = document.getElementById('subscriptionEndDate') || document.querySelector('.detail-value');
                 if (endDateElement) {
@@ -53,7 +57,7 @@ function updateStats() {
     if (typeof projectsData !== 'undefined') {
         userData.projectsCount = projectsData.length;
     }
-    
+
     // 从订阅数据获取 AI 调用次数
     if (typeof getCurrentSubscription !== 'undefined') {
         const sub = getCurrentSubscription();
@@ -64,7 +68,7 @@ function updateStats() {
             userData.teamMembersCount = sub.teamMembersUsed;
         }
     }
-    
+
     // 更新统计显示
     document.getElementById('statProjects').textContent = userData.projectsCount;
     document.getElementById('statAICalls').textContent = userData.aiCallsCount;
@@ -75,12 +79,12 @@ function updateStats() {
 function editSetting(type) {
     const modal = document.createElement('div');
     modal.className = 'modal active';
-    
+
     let title = '';
     let inputType = 'text';
     let currentValue = '';
     let placeholder = '';
-    
+
     switch(type) {
         case 'name':
             title = '编辑用户名';
@@ -105,7 +109,7 @@ function editSetting(type) {
             placeholder = '请输入新密码';
             break;
     }
-    
+
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
@@ -115,13 +119,13 @@ function editSetting(type) {
             <div class="modal-body">
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: 500;">${title.replace('编辑', '').replace('修改', '')}</label>
-                    <input type="${inputType}" id="editInput" value="${currentValue}" placeholder="${placeholder}" 
+                    <input type="${inputType}" id="editInput" value="${currentValue}" placeholder="${placeholder}"
                            style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
                 </div>
                 ${type === 'password' ? `
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 500;">确认密码</label>
-                        <input type="password" id="confirmInput" placeholder="请再次输入新密码" 
+                        <input type="password" id="confirmInput" placeholder="请再次输入新密码"
                                style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px;">
                     </div>
                 ` : ''}
@@ -132,16 +136,16 @@ function editSetting(type) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // 点击外部关闭
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.remove();
         }
     });
-    
+
     // 聚焦输入框
     setTimeout(() => {
         const input = document.getElementById('editInput');
@@ -153,12 +157,12 @@ function editSetting(type) {
 function saveSetting(type, modal) {
     const input = document.getElementById('editInput');
     const newValue = input.value.trim();
-    
+
     if (!newValue) {
         alert('请输入有效值');
         return;
     }
-    
+
     // 密码验证
     if (type === 'password') {
         const confirmInput = document.getElementById('confirmInput');
@@ -171,7 +175,7 @@ function saveSetting(type, modal) {
             return;
         }
     }
-    
+
     // 更新数据
     switch(type) {
         case 'name':
@@ -192,7 +196,7 @@ function saveSetting(type, modal) {
             alert('密码修改成功！');
             break;
     }
-    
+
     modal.remove();
     alert('保存成功！');
 }
@@ -206,7 +210,7 @@ function showEditModal() {
 function showDeviceModal() {
     const modal = document.createElement('div');
     modal.className = 'modal active';
-    
+
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
@@ -252,9 +256,9 @@ function showDeviceModal() {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.remove();
@@ -281,7 +285,7 @@ function enable2FA() {
 function manageAPI() {
     const modal = document.createElement('div');
     modal.className = 'modal active';
-    
+
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
@@ -307,9 +311,9 @@ function manageAPI() {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.remove();
@@ -335,6 +339,18 @@ function createAPIKey() {
     }
 }
 
+// 退出登录
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        // 清除所有本地存储的数据
+        sessionStorage.clear();
+        localStorage.removeItem('pluginDraft');
+
+        // 跳转到登录页面
+        window.location.href = 'index.html';
+    }
+}
+
 // 确保函数在全局可用
 window.editSetting = editSetting;
 window.saveSetting = saveSetting;
@@ -343,6 +359,6 @@ window.showDeviceModal = showDeviceModal;
 window.removeDevice = removeDevice;
 window.enable2FA = enable2FA;
 window.manageAPI = manageAPI;
+window.logout = logout;
 window.copyAPIKey = copyAPIKey;
 window.createAPIKey = createAPIKey;
-

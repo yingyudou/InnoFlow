@@ -10,7 +10,8 @@ const subscriptionPlans = {
             projects: 3,
             aiCalls: 50,
             teamMembers: 5,
-            storage: 1
+            storage: 1,
+            plugins: 5 // 免费版最多安装5个插件
         }
     },
     pro: {
@@ -21,7 +22,8 @@ const subscriptionPlans = {
             projects: -1, // -1 表示无限
             aiCalls: 500,
             teamMembers: 20,
-            storage: 50
+            storage: 50,
+            plugins: -1 // 专业版无限插件
         }
     },
     enterprise: {
@@ -32,7 +34,8 @@ const subscriptionPlans = {
             projects: -1,
             aiCalls: -1,
             teamMembers: -1,
-            storage: -1
+            storage: -1,
+            plugins: -1 // 企业版无限插件
         }
     }
 };
@@ -47,7 +50,9 @@ let currentSubscription = {
     projectsUsed: 6, // 已创建项目数（6个项目）
     projectsLimit: -1, // 专业版无限
     teamMembersUsed: 8, // 当前团队成员数
-    teamMembersLimit: 20 // 专业版限制
+    teamMembersLimit: 20, // 专业版限制
+    pluginsUsed: 2, // 已安装插件数
+    pluginsLimit: -1 // 专业版无限，免费版限制为5个
 };
 
 // 初始化
@@ -64,7 +69,7 @@ function initSubscriptionPage() {
 // 更新定价卡片按钮状态
 function updatePricingCards() {
     const currentPlan = currentSubscription.plan;
-    
+
     // 免费版按钮
     const freeBtn = document.querySelector('.pricing-card:not(.featured):not(.enterprise) .btn-secondary');
     if (freeBtn && currentPlan === 'free') {
@@ -82,12 +87,13 @@ function updatePricingCards() {
                 currentSubscription.aiCallsLimit = 50;
                 currentSubscription.projectsLimit = 3;
                 currentSubscription.teamMembersLimit = 5;
+                currentSubscription.pluginsLimit = 5;
                 updateSubscriptionStatus();
                 updatePricingCards();
             }
         };
     }
-    
+
     // 专业版按钮
     const proBtn = document.getElementById('proPlanBtn');
     if (proBtn) {
@@ -102,7 +108,7 @@ function updatePricingCards() {
             proBtn.onclick = () => subscribeToPlan('pro');
         }
     }
-    
+
     // 企业版按钮
     const enterpriseBtn = document.querySelector('.pricing-card.enterprise .btn-primary');
     if (enterpriseBtn) {
@@ -122,10 +128,10 @@ function updatePricingCards() {
 function updateSubscriptionStatus() {
     const statusDiv = document.getElementById('subscriptionStatus');
     if (!statusDiv) return;
-    
+
     const plan = subscriptionPlans[currentSubscription.plan];
     const isFree = currentSubscription.plan === 'free';
-    
+
     statusDiv.innerHTML = `
         <div class="status-card">
             <div class="status-header">
@@ -135,7 +141,7 @@ function updateSubscriptionStatus() {
                 </div>
                 ${isFree ? `<button class="btn-primary" onclick="window.location.href='#pricing'">升级套餐</button>` : ''}
             </div>
-            
+
             <div class="usage-stats">
                 <div class="usage-item">
                     <div class="usage-label">AI 调用次数</div>
@@ -146,7 +152,7 @@ function updateSubscriptionStatus() {
                         ${currentSubscription.aiCallsUsed} / ${currentSubscription.aiCallsLimit === -1 ? '∞' : currentSubscription.aiCallsLimit}
                     </div>
                 </div>
-                
+
                 <div class="usage-item">
                     <div class="usage-label">项目数量</div>
                     <div class="usage-bar">
@@ -156,7 +162,7 @@ function updateSubscriptionStatus() {
                         ${currentSubscription.projectsUsed} / ${currentSubscription.projectsLimit === -1 ? '∞' : currentSubscription.projectsLimit}
                     </div>
                 </div>
-                
+
                 <div class="usage-item">
                     <div class="usage-label">团队成员</div>
                     <div class="usage-bar">
@@ -164,6 +170,16 @@ function updateSubscriptionStatus() {
                     </div>
                     <div class="usage-text">
                         ${currentSubscription.teamMembersUsed} / ${currentSubscription.teamMembersLimit === -1 ? '∞' : currentSubscription.teamMembersLimit}
+                    </div>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-label">已安装插件</div>
+                    <div class="usage-bar">
+                        <div class="usage-fill" style="width: ${currentSubscription.pluginsLimit === -1 ? 0 : ((currentSubscription.pluginsUsed || 0) / currentSubscription.pluginsLimit) * 100}%"></div>
+                    </div>
+                    <div class="usage-text">
+                        ${currentSubscription.pluginsUsed || 0} / ${currentSubscription.pluginsLimit === -1 ? '∞' : currentSubscription.pluginsLimit}
                     </div>
                 </div>
             </div>
@@ -174,20 +190,20 @@ function updateSubscriptionStatus() {
 // 订阅套餐
 function subscribeToPlan(planType) {
     const plan = subscriptionPlans[planType];
-    
+
     if (planType === 'enterprise') {
         alert('企业版请联系销售团队\n\n邮箱: sales@innoflow.com\n电话: 400-XXX-XXXX');
         return;
     }
-    
+
     // 显示订阅确认弹窗
     const modal = document.createElement('div');
     modal.className = 'modal active';
-    
+
     const priceMonthly = plan.price;
     const priceYearly = plan.priceYearly;
     const savings = (priceMonthly * 12) - priceYearly;
-    
+
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
@@ -212,7 +228,7 @@ function subscribeToPlan(planType) {
                         </div>
                     </label>
                 </div>
-                
+
                 <div class="payment-summary">
                     <div class="summary-row">
                         <span>套餐</span>
@@ -227,7 +243,7 @@ function subscribeToPlan(planType) {
                         <span id="totalPrice">¥${priceMonthly}</span>
                     </div>
                 </div>
-                
+
                 <div style="margin-top: 24px;">
                     <h4 style="margin-bottom: 12px;">支付方式</h4>
                     <div class="payment-methods">
@@ -245,7 +261,7 @@ function subscribeToPlan(planType) {
                         </label>
                     </div>
                 </div>
-                
+
                 <div style="display: flex; gap: 12px; margin-top: 24px;">
                     <button class="btn-secondary" style="flex: 1;" onclick="this.closest('.modal').remove()">
                         取消
@@ -257,9 +273,9 @@ function subscribeToPlan(planType) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // 点击外部关闭
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
@@ -273,10 +289,10 @@ function updateBillingPrice() {
     const period = document.querySelector('input[name="billingPeriod"]:checked').value;
     const planType = document.querySelector('.modal').dataset.plan || 'pro';
     const plan = subscriptionPlans[planType];
-    
+
     const periodText = period === 'monthly' ? '按月' : '按年';
     const price = period === 'monthly' ? plan.price : plan.priceYearly;
-    
+
     document.getElementById('selectedPeriod').textContent = periodText;
     document.getElementById('totalPrice').textContent = `¥${price}${period === 'yearly' ? '/年' : ''}`;
 }
@@ -287,25 +303,26 @@ function confirmSubscribe(planType, modal) {
     const period = document.querySelector('input[name="billingPeriod"]:checked').value;
     const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
     const price = period === 'monthly' ? plan.price : plan.priceYearly;
-    
+
     const btn = modal.querySelector('.btn-primary');
     btn.textContent = '处理中...';
     btn.disabled = true;
-    
+
     // 模拟支付过程
     setTimeout(() => {
         // 更新订阅状态
         currentSubscription.plan = planType;
-        currentSubscription.endDate = period === 'monthly' 
-            ? getNextMonthDate() 
+        currentSubscription.endDate = period === 'monthly'
+            ? getNextMonthDate()
             : getNextYearDate();
         currentSubscription.aiCallsLimit = plan.features.aiCalls;
         currentSubscription.projectsLimit = plan.features.projects;
         currentSubscription.teamMembersLimit = plan.features.teamMembers;
-        
+        currentSubscription.pluginsLimit = plan.features.plugins;
+
         updateSubscriptionStatus();
         modal.remove();
-        
+
         alert(`🎉 订阅成功！\n\n您已成功订阅 ${plan.name}，新功能已立即生效！`);
     }, 1500);
 }
@@ -329,16 +346,16 @@ function toggleFaq(element) {
     const item = element.closest('.faq-item');
     const answer = item.querySelector('.faq-answer');
     const toggle = element.querySelector('.faq-toggle');
-    
+
     const isOpen = item.classList.contains('open');
-    
+
     // 关闭所有其他 FAQ
     document.querySelectorAll('.faq-item').forEach(faq => {
         faq.classList.remove('open');
         faq.querySelector('.faq-answer').style.maxHeight = null;
         faq.querySelector('.faq-toggle').textContent = '+';
     });
-    
+
     if (!isOpen) {
         item.classList.add('open');
         answer.style.maxHeight = answer.scrollHeight + 'px';
@@ -360,24 +377,28 @@ function checkFeatureLimit(feature) {
         teamMembers: {
             used: currentSubscription.teamMembersUsed,
             limit: currentSubscription.teamMembersLimit
+        },
+        plugins: {
+            used: currentSubscription.pluginsUsed || 0,
+            limit: currentSubscription.pluginsLimit || 5
         }
     };
-    
+
     const featureLimit = limits[feature];
     if (!featureLimit) return { allowed: true };
-    
+
     if (featureLimit.limit === -1) {
         return { allowed: true }; // 无限
     }
-    
+
     if (featureLimit.used >= featureLimit.limit) {
-        return { 
-            allowed: false, 
+        return {
+            allowed: false,
             message: getLimitMessage(feature),
-            upgrade: true 
+            upgrade: true
         };
     }
-    
+
     return { allowed: true };
 }
 
@@ -386,9 +407,10 @@ function getLimitMessage(feature) {
     const messages = {
         aiCalls: 'AI 调用次数已达上限',
         projects: '项目数量已达上限',
-        teamMembers: '团队成员数量已达上限'
+        teamMembers: '团队成员数量已达上限',
+        plugins: '插件数量已达上限，请升级套餐以安装更多插件'
     };
-    
+
     return messages[feature] || '功能使用已达上限';
 }
 
@@ -412,7 +434,7 @@ function showUpgradePrompt(feature) {
                             升级到专业版解锁更多功能
                         </p>
                     </div>
-                    
+
                     <div style="display: flex; gap: 12px;">
                         <button class="btn-secondary" style="flex: 1;" onclick="this.closest('.modal').remove()">
                             稍后再说
@@ -424,9 +446,9 @@ function showUpgradePrompt(feature) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(upgradeModal);
-        
+
         upgradeModal.addEventListener('click', function(e) {
             if (e.target === upgradeModal) {
                 upgradeModal.remove();
@@ -449,7 +471,7 @@ window.hasFeatureAccess = hasFeatureAccess;
 // 检查是否有权限使用功能
 function hasFeatureAccess(feature) {
     const plan = subscriptionPlans[currentSubscription.plan];
-    
+
     switch(feature) {
         case 'unlimitedProjects':
             return plan.features.projects === -1;
@@ -467,4 +489,3 @@ function hasFeatureAccess(feature) {
             return false;
     }
 }
-

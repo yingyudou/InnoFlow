@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - InnoFlow</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-nav-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge-nav {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .admin-sidebar {
+            width: 240px;
+            background: #f8f9fa;
+            min-height: calc(100vh - 64px);
+            padding: 24px 0;
+            border-right: 1px solid var(--border-color);
+        }
+        .admin-sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .admin-sidebar-item:hover {
+            background: #e9ecef;
+        }
+        .admin-sidebar-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .admin-content {
+            flex: 1;
+            padding: 32px;
+            background: #f8f9fa;
+        }
+        .admin-layout {
+            display: flex;
+        }
+        .coming-soon {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .coming-soon-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+        .coming-soon h2 {
+            margin: 0 0 16px 0;
+            color: var(--text-primary);
+        }
+        .coming-soon p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="admin-nav">
+        <div class="admin-nav-left">
+            <img src="../assets/logo.svg" alt="InnoFlow" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+            <span class="admin-nav-title">InnoFlow 管理后台</span>
+            <span class="admin-badge-nav">管理员</span>
+        </div>
+        <div class="admin-nav-right">
+            <span id="adminUsername">管理员</span>
+            <button class="btn-secondary" onclick="logout()" style="background: rgba(255,255,255,0.2); color: white; border: none;">退出登录</button>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <a href="admin-dashboard.html" class="admin-sidebar-item">
+                <span>📊</span>
+                <span>仪表盘</span>
+            </a>
+            <a href="admin-plugins.html" class="admin-sidebar-item">
+                <span>🔌</span>
+                <span>插件审核</span>
+            </a>
+            <a href="admin-users.html" class="admin-sidebar-item active">
+                <span>👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="admin-finance.html" class="admin-sidebar-item">
+                <span>💳</span>
+                <span>财务管理</span>
+            </a>
+            <a href="admin-settings.html" class="admin-sidebar-item">
+                <span>⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </div>
+
+        <div class="admin-content">
+            <div class="coming-soon">
+                <div class="coming-soon-icon">👥</div>
+                <h2>用户管理</h2>
+                <p>此功能正在开发中，敬请期待...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+        const adminUsername = sessionStorage.getItem('adminUsername') || '管理员';
+        document.getElementById('adminUsername').textContent = adminUsername;
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminUsername');
+                window.location.href = 'admin-login.html';
+            }
+        }
+        window.logout = logout;
+    </script>
+</body>
+</html>

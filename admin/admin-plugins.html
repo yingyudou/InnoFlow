@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插件审核管理 - InnoFlow</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-nav-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge-nav {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .admin-sidebar {
+            width: 240px;
+            background: #f8f9fa;
+            min-height: calc(100vh - 64px);
+            padding: 24px 0;
+            border-right: 1px solid var(--border-color);
+        }
+        .admin-sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .admin-sidebar-item:hover {
+            background: #e9ecef;
+        }
+        .admin-sidebar-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .admin-content {
+            flex: 1;
+            padding: 32px;
+            background: #f8f9fa;
+        }
+        .admin-layout {
+            display: flex;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+        }
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .plugin-review-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .plugin-review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        .plugin-review-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+        }
+        .plugin-review-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .plugin-review-status {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-reviewing {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        .status-approved {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .plugin-review-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        .plugin-review-section {
+            margin-bottom: 16px;
+        }
+        .plugin-review-section h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .plugin-review-section p {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        .plugin-review-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .price-display {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .price-display strong {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="admin-nav">
+        <div class="admin-nav-left">
+            <img src="../assets/logo.svg" alt="InnoFlow" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+            <span class="admin-nav-title">InnoFlow 管理后台</span>
+            <span class="admin-badge-nav">管理员</span>
+        </div>
+        <div class="admin-nav-right">
+            <span id="adminUsername">管理员</span>
+            <button class="btn-secondary" onclick="logout()" style="background: rgba(255,255,255,0.2); color: white; border: none;">退出登录</button>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <a href="admin-dashboard.html" class="admin-sidebar-item">
+                <span>📊</span>
+                <span>仪表盘</span>
+            </a>
+            <a href="admin-plugins.html" class="admin-sidebar-item active">
+                <span>🔌</span>
+                <span>插件审核</span>
+            </a>
+            <a href="admin-users.html" class="admin-sidebar-item">
+                <span>👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="admin-finance.html" class="admin-sidebar-item">
+                <span>💳</span>
+                <span>财务管理</span>
+            </a>
+            <a href="admin-settings.html" class="admin-sidebar-item">
+                <span>⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </div>
+
+        <div class="admin-content">
+            <h1 style="margin-bottom: 24px;">插件审核管理</h1>
+
+            <!-- 筛选标签 -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterPlugins('all')">全部</button>
+                <button class="filter-tab" onclick="filterPlugins('pending')">待审核 (8)</button>
+                <button class="filter-tab" onclick="filterPlugins('reviewing')">审核中 (3)</button>
+                <button class="filter-tab" onclick="filterPlugins('approved')">已通过 (45)</button>
+                <button class="filter-tab" onclick="filterPlugins('rejected')">已驳回 (5)</button>
+            </div>
+
+            <!-- 插件列表 -->
+            <div id="pluginList">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script src="../js/pricing.js"></script>
+    <script>
+        // 检查管理员登录状态
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // 显示管理员用户名
+        const adminUsername = sessionStorage.getItem('adminUsername') || '管理员';
+        document.getElementById('adminUsername').textContent = adminUsername;
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminUsername');
+                window.location.href = 'admin-login.html';
+            }
+        }
+        window.logout = logout;
+
+        // 插件数据（模拟）
+        const pluginsData = [
+            {
+                id: 'plugin-1',
+                name: 'AI代码审查工具',
+                author: 'TechFlow团队',
+                authorId: 'dev-1',
+                uploadTime: '2025-11-01 14:30',
+                status: 'pending',
+                description: '自动审查代码质量，发现潜在问题和优化建议，支持多种编程语言',
+                category: '开发工具',
+                version: 'v1.0.5',
+                price: 199,
+                proposedPrice: 199,
+                priceReason: '功能强大，市场同类产品价格在150-250元之间',
+                features: ['代码质量检测', '安全漏洞扫描', '性能优化建议', '多语言支持'],
+                screenshots: [],
+                downloadCount: 0,
+                rating: 0
+            },
+            {
+                id: 'plugin-2',
+                name: '性能监控插件',
+                author: 'Metrics Lab',
+                authorId: 'dev-2',
+                uploadTime: '2025-11-01 10:15',
+                status: 'pending',
+                description: '实时监控项目性能指标，生成分析报告，帮助优化项目性能',
+                category: '监控工具',
+                version: 'v1.8.3',
+                price: 149,
+                proposedPrice: 149,
+                priceReason: '参考市场同类产品，功能完善',
+                features: ['实时监控', '性能分析', '报告生成', '告警通知'],
+                screenshots: [],
+                downloadCount: 0,
+                rating: 0
+            },
+            {
+                id: 'plugin-3',
+                name: 'API测试工具',
+                author: 'API Tools团队',
+                authorId: 'dev-3',
+                uploadTime: '2025-10-31 16:45',
+                status: 'reviewing',
+                description: '可视化API测试，自动生成测试报告，支持RESTful和GraphQL',
+                category: '测试工具',
+                version: 'v1.5.0',
+                price: 299,
+                proposedPrice: 249,
+                priceReason: '功能全面，但价格偏高，建议调整',
+                features: ['API测试', '自动化测试', '报告生成', '多协议支持'],
+                screenshots: [],
+                downloadCount: 0,
+                rating: 0
+            }
+        ];
+
+        // 当前筛选状态
+        let currentFilter = 'all';
+
+        // 筛选插件
+        function filterPlugins(status) {
+            currentFilter = status;
+
+            // 更新标签状态
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 渲染列表
+            renderPluginList();
+        }
+        window.filterPlugins = filterPlugins;
+
+        // 渲染插件列表
+        function renderPluginList() {
+            const list = document.getElementById('pluginList');
+            let filteredPlugins = pluginsData;
+
+            if (currentFilter !== 'all') {
+                filteredPlugins = pluginsData.filter(p => p.status === currentFilter);
+            }
+
+            if (filteredPlugins.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无数据</p>';
+                return;
+            }
+
+            list.innerHTML = filteredPlugins.map(plugin => createPluginCard(plugin)).join('');
+        }
+
+        // 创建插件卡片
+        function createPluginCard(plugin) {
+            const statusMap = {
+                pending: { text: '待审核', class: 'status-pending' },
+                reviewing: { text: '审核中', class: 'status-reviewing' },
+                approved: { text: '已通过', class: 'status-approved' },
+                rejected: { text: '已驳回', class: 'status-rejected' }
+            };
+
+            const status = statusMap[plugin.status] || statusMap.pending;
+
+            return `
+                <div class="plugin-review-card" data-id="${plugin.id}">
+                    <div class="plugin-review-header">
+                        <div class="plugin-review-info">
+                            <h3>${plugin.name}</h3>
+                            <div class="plugin-review-meta">
+                                <span>上传者: ${plugin.author}</span>
+                                <span>上传时间: ${plugin.uploadTime}</span>
+                                <span>分类: ${plugin.category}</span>
+                                <span>版本: ${plugin.version}</span>
+                            </div>
+                        </div>
+                        <span class="plugin-review-status ${status.class}">${status.text}</span>
+                    </div>
+
+                    <div class="plugin-review-content">
+                        <div>
+                            <div class="plugin-review-section">
+                                <h4>插件描述</h4>
+                                <p>${plugin.description}</p>
+                            </div>
+                            <div class="plugin-review-section">
+                                <h4>主要功能</h4>
+                                <p>${plugin.features.join(' · ')}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="plugin-review-section">
+                                <h4>定价信息</h4>
+                                <div class="price-display">
+                                    <div>上传者定价: <strong>¥${plugin.price}</strong></div>
+                                    <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">
+                                        定价理由: ${plugin.priceReason}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="plugin-review-actions">
+                        <button class="btn-primary" onclick="viewPluginDetail('${plugin.id}')">查看详情</button>
+                        ${plugin.status === 'pending' || plugin.status === 'reviewing' ? `
+                            <button class="btn-primary" onclick="startPricingNegotiation('${plugin.id}')">定价协商</button>
+                            <button class="btn-primary" style="background: #28a745;" onclick="approvePlugin('${plugin.id}')">通过审核</button>
+                            <button class="btn-secondary" style="background: #dc3545; color: white;" onclick="rejectPlugin('${plugin.id}')">驳回</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 查看插件详情
+        function viewPluginDetail(pluginId) {
+            const plugin = pluginsData.find(p => p.id === pluginId);
+            if (!plugin) return;
+
+            alert(`插件详情\n\n名称: ${plugin.name}\n作者: ${plugin.author}\n描述: ${plugin.description}\n版本: ${plugin.version}\n定价: ¥${plugin.price}`);
+        }
+        window.viewPluginDetail = viewPluginDetail;
+
+        // 开始定价协商
+        function startPricingNegotiation(pluginId) {
+            window.location.href = `admin-pricing.html?plugin=${pluginId}`;
+        }
+        window.startPricingNegotiation = startPricingNegotiation;
+
+        // 通过审核
+        function approvePlugin(pluginId) {
+            if (confirm('确定要通过此插件的审核吗？')) {
+                const plugin = pluginsData.find(p => p.id === pluginId);
+                if (plugin) {
+                    plugin.status = 'approved';
+                    renderPluginList();
+                    alert('插件审核已通过！');
+                }
+            }
+        }
+        window.approvePlugin = approvePlugin;
+
+        // 驳回插件
+        function rejectPlugin(pluginId) {
+            const reason = prompt('请输入驳回原因：');
+            if (reason) {
+                const plugin = pluginsData.find(p => p.id === pluginId);
+                if (plugin) {
+                    plugin.status = 'rejected';
+                    renderPluginList();
+                    alert('插件已驳回');
+                }
+            }
+        }
+        window.rejectPlugin = rejectPlugin;
+
+        // 初始化
+        renderPluginList();
+    </script>
+</body>
+</html>

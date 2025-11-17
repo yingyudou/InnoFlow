@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定价协商 - InnoFlow</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-nav-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge-nav {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .admin-sidebar {
+            width: 240px;
+            background: #f8f9fa;
+            min-height: calc(100vh - 64px);
+            padding: 24px 0;
+            border-right: 1px solid var(--border-color);
+        }
+        .admin-sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .admin-sidebar-item:hover {
+            background: #e9ecef;
+        }
+        .admin-sidebar-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .admin-content {
+            flex: 1;
+            padding: 32px;
+            background: #f8f9fa;
+        }
+        .admin-layout {
+            display: flex;
+        }
+        .pricing-negotiation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .pricing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .pricing-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+        }
+        .pricing-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .price-box {
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+        }
+        .price-box.developer {
+            border-color: #ffc107;
+            background: #fffbf0;
+        }
+        .price-box.admin {
+            border-color: var(--primary-color);
+            background: #f0f4ff;
+        }
+        .price-box h4 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .price-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .price-reason {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .negotiation-history {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        .negotiation-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .negotiation-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .negotiation-item-author {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .negotiation-item-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .negotiation-item-content {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .suggest-price-form {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .price-suggestion-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .price-suggestion-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .market-reference {
+            background: #e7f3ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .market-reference h4 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+        }
+        .market-reference-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .market-reference-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="admin-nav">
+        <div class="admin-nav-left">
+            <img src="../assets/logo.svg" alt="InnoFlow" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+            <span class="admin-nav-title">InnoFlow 管理后台</span>
+            <span class="admin-badge-nav">管理员</span>
+        </div>
+        <div class="admin-nav-right">
+            <span id="adminUsername">管理员</span>
+            <button class="btn-secondary" onclick="logout()" style="background: rgba(255,255,255,0.2); color: white; border: none;">退出登录</button>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <a href="admin-dashboard.html" class="admin-sidebar-item">
+                <span>📊</span>
+                <span>仪表盘</span>
+            </a>
+            <a href="admin-plugins.html" class="admin-sidebar-item active">
+                <span>🔌</span>
+                <span>插件审核</span>
+            </a>
+            <a href="admin-users.html" class="admin-sidebar-item">
+                <span>👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="admin-finance.html" class="admin-sidebar-item">
+                <span>💳</span>
+                <span>财务管理</span>
+            </a>
+            <a href="admin-settings.html" class="admin-sidebar-item">
+                <span>⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </div>
+
+        <div class="admin-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h1 style="margin: 0;">定价协商</h1>
+                <button class="btn-secondary" onclick="window.location.href='admin-plugins.html'">返回插件审核</button>
+            </div>
+
+            <!-- 定价协商列表 -->
+            <div id="pricingList">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script src="../js/pricing.js"></script>
+    <script>
+        // 检查管理员登录状态
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // 显示管理员用户名
+        const adminUsername = sessionStorage.getItem('adminUsername') || '管理员';
+        document.getElementById('adminUsername').textContent = adminUsername;
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminUsername');
+                window.location.href = 'admin-login.html';
+            }
+        }
+        window.logout = logout;
+
+        // 获取URL参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 定价协商数据（模拟）
+        const pricingNegotiations = [
+            {
+                id: 'neg-1',
+                pluginId: 'plugin-1',
+                pluginName: 'AI代码审查工具',
+                developer: 'TechFlow团队',
+                developerPrice: 199,
+                adminPrice: 179,
+                status: 'negotiating',
+                rounds: 2,
+                history: [
+                    {
+                        author: 'TechFlow团队',
+                        role: 'developer',
+                        price: 199,
+                        message: '我们的工具功能强大，包含代码质量检测、安全漏洞扫描、性能优化建议等功能，参考市场同类产品，定价199元合理。',
+                        time: '2025-11-01 14:30'
+                    },
+                    {
+                        author: '管理员',
+                        role: 'admin',
+                        price: 179,
+                        message: '经过评估，建议定价179元。参考同类产品"代码审查助手"(¥159)和"安全扫描工具"(¥189)，您的产品功能完善，但考虑到市场接受度，建议适当调整。',
+                        time: '2025-11-01 15:20'
+                    },
+                    {
+                        author: 'TechFlow团队',
+                        role: 'developer',
+                        price: 189,
+                        message: '我们理解您的建议，但考虑到开发成本和功能价值，我们愿意调整到189元，这是我们的底线。',
+                        time: '2025-11-01 16:45'
+                    }
+                ],
+                marketReference: [
+                    { name: '代码审查助手', price: 159, rating: 4.5 },
+                    { name: '安全扫描工具', price: 189, rating: 4.6 },
+                    { name: '性能优化专家', price: 199, rating: 4.7 }
+                ]
+            },
+            {
+                id: 'neg-2',
+                pluginId: 'plugin-3',
+                pluginName: 'API测试工具',
+                developer: 'API Tools团队',
+                developerPrice: 299,
+                adminPrice: 249,
+                status: 'pending',
+                rounds: 1,
+                history: [
+                    {
+                        author: 'API Tools团队',
+                        role: 'developer',
+                        price: 299,
+                        message: '我们的API测试工具功能全面，支持RESTful和GraphQL，包含自动化测试和报告生成，定价299元。',
+                        time: '2025-10-31 16:45'
+                    },
+                    {
+                        author: '管理员',
+                        role: 'admin',
+                        price: 249,
+                        message: '建议定价249元。市场同类产品价格在200-280元之间，考虑到功能完善度，249元更符合市场定位。',
+                        time: '2025-11-01 10:30'
+                    }
+                ],
+                marketReference: [
+                    { name: 'API测试助手', price: 199, rating: 4.4 },
+                    { name: '接口测试工具', price: 229, rating: 4.5 },
+                    { name: '自动化测试平台', price: 279, rating: 4.6 }
+                ]
+            }
+        ];
+
+        // 渲染定价协商列表
+        function renderPricingList() {
+            const list = document.getElementById('pricingList');
+            const pluginId = getUrlParameter('plugin');
+
+            let negotiations = pricingNegotiations;
+            if (pluginId) {
+                negotiations = pricingNegotiations.filter(n => n.pluginId === pluginId);
+            }
+
+            if (negotiations.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">暂无定价协商</p>';
+                return;
+            }
+
+            list.innerHTML = negotiations.map(neg => createPricingCard(neg)).join('');
+        }
+
+        // 创建定价协商卡片
+        function createPricingCard(negotiation) {
+            const latestMessage = negotiation.history[negotiation.history.length - 1];
+            const statusMap = {
+                pending: { text: '待开发者回复', color: '#ffc107' },
+                negotiating: { text: '协商中', color: '#17a2b8' },
+                agreed: { text: '已达成一致', color: '#28a745' },
+                rejected: { text: '协商失败', color: '#dc3545' }
+            };
+            const status = statusMap[negotiation.status] || statusMap.pending;
+
+            return `
+                <div class="pricing-negotiation-card" data-id="${negotiation.id}">
+                    <div class="pricing-header">
+                        <div class="pricing-info">
+                            <h3>${negotiation.pluginName}</h3>
+                            <p style="margin: 4px 0; color: var(--text-secondary);">开发者: ${negotiation.developer} · 协商轮次: ${negotiation.rounds}/3</p>
+                        </div>
+                        <span style="padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${status.color}20; color: ${status.color};">
+                            ${status.text}
+                        </span>
+                    </div>
+
+                    <div class="pricing-comparison">
+                        <div class="price-box developer">
+                            <h4>开发者定价</h4>
+                            <div class="price-value">¥${negotiation.developerPrice}</div>
+                            <div class="price-reason">${negotiation.history[0].message}</div>
+                        </div>
+                        <div class="price-box admin">
+                            <h4>管理员建议</h4>
+                            <div class="price-value">¥${negotiation.adminPrice}</div>
+                            <div class="price-reason">${negotiation.history.find(h => h.role === 'admin')?.message || '暂无建议'}</div>
+                        </div>
+                    </div>
+
+                    <div class="market-reference">
+                        <h4>📊 市场参考价格</h4>
+                        ${negotiation.marketReference.map(ref => `
+                            <div class="market-reference-item">
+                                <span>${ref.name}</span>
+                                <span><strong>¥${ref.price}</strong> ⭐${ref.rating}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="negotiation-history">
+                        <h4 style="margin: 0 0 16px 0;">协商历史</h4>
+                        ${negotiation.history.map(item => `
+                            <div class="negotiation-item">
+                                <div class="negotiation-item-header">
+                                    <span class="negotiation-item-author">${item.author} (${item.role === 'admin' ? '管理员' : '开发者'})</span>
+                                    <span class="negotiation-item-time">${item.time}</span>
+                                </div>
+                                <div class="negotiation-item-content">
+                                    <strong>建议价格: ¥${item.price}</strong>
+                                    <p style="margin: 8px 0 0 0;">${item.message}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    ${negotiation.status !== 'agreed' && negotiation.status !== 'rejected' && negotiation.rounds < 3 ? `
+                        <div class="suggest-price-form">
+                            <h4 style="margin: 0 0 16px 0;">发送定价建议</h4>
+                            <div class="price-suggestion-input">
+                                <input type="number" id="suggestPrice_${negotiation.id}" placeholder="输入建议价格" value="${negotiation.adminPrice}" min="0">
+                                <button class="btn-primary" onclick="sendPriceSuggestion('${negotiation.id}')">发送建议</button>
+                            </div>
+                            <textarea id="suggestMessage_${negotiation.id}" placeholder="输入建议理由（可选）" style="width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 12px; font-family: inherit;"></textarea>
+                        </div>
+                    ` : ''}
+
+                    ${negotiation.status === 'agreed' ? `
+                        <div style="margin-top: 16px; padding: 16px; background: #d1e7dd; border-radius: 8px; color: #0f5132;">
+                            ✅ 已达成一致，最终定价: <strong>¥${negotiation.developerPrice}</strong>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // 发送定价建议
+        function sendPriceSuggestion(negotiationId) {
+            const negotiation = pricingNegotiations.find(n => n.id === negotiationId);
+            if (!negotiation) return;
+
+            const priceInput = document.getElementById(`suggestPrice_${negotiationId}`);
+            const messageInput = document.getElementById(`suggestMessage_${negotiationId}`);
+
+            const price = parseInt(priceInput.value);
+            const message = messageInput.value || '经过评估，建议调整定价。';
+
+            if (!price || price <= 0) {
+                alert('请输入有效的价格');
+                return;
+            }
+
+            if (negotiation.rounds >= 3) {
+                alert('已达到最大协商轮次（3轮）');
+                return;
+            }
+
+            // 添加协商记录
+            negotiation.history.push({
+                author: '管理员',
+                role: 'admin',
+                price: price,
+                message: message,
+                time: new Date().toLocaleString('zh-CN')
+            });
+
+            negotiation.adminPrice = price;
+            negotiation.rounds++;
+            negotiation.status = 'pending'; // 等待开发者回复
+
+            // 重新渲染
+            renderPricingList();
+
+            alert('定价建议已发送给开发者');
+        }
+        window.sendPriceSuggestion = sendPriceSuggestion;
+
+        // 初始化
+        renderPricingList();
+    </script>
+</body>
+</html>

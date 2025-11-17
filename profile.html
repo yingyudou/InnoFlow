@@ -17,9 +17,10 @@
         </div>
         <div class="nav-right">
             <button class="btn-secondary" onclick="window.location.href='dashboard.html'">返回主页</button>
+            <button class="btn-secondary" onclick="logout()" style="color: #dc3545; border-color: #dc3545;">退出登录</button>
         </div>
     </nav>
-    
+
     <div class="container">
         <!-- 个人信息头部 -->
         <div class="profile-header">
@@ -40,7 +41,7 @@
                 <button class="btn-secondary" onclick="showEditModal()">编辑资料</button>
             </div>
         </div>
-        
+
         <!-- 统计卡片 -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -71,8 +72,37 @@
                     <div class="stat-label">平均完成度</div>
                 </div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛠️</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="statPlugins">0</div>
+                    <div class="stat-label">我的插件</div>
+                </div>
+            </div>
         </div>
-        
+
+        <!-- 开发者中心入口 -->
+        <div style="margin-bottom: 30px;">
+            <div class="stat-card" onclick="window.location.href='developer/developer-center.html'" style="cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'">
+                <div class="stat-icon" style="font-size: 48px;">🛠️</div>
+                <div class="stat-content" style="flex: 1;">
+                    <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">开发者中心</div>
+                    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">分享您的创新工具，获得收益</div>
+                    <div style="display: flex; gap: 24px; margin-top: 16px;">
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700;" id="devPluginsCount">0</div>
+                            <div style="font-size: 12px; opacity: 0.8;">我的插件</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700;" id="devEarnings">¥0</div>
+                            <div style="font-size: 12px; opacity: 0.8;">累计收益</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="color: white; font-size: 18px; font-weight: 600; align-self: center;">进入 →</div>
+            </div>
+        </div>
+
         <!-- 内容区域 -->
         <div class="profile-content">
             <!-- 左侧：账户设置 -->
@@ -116,7 +146,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="profile-section">
                     <h2>通知设置</h2>
                     <div class="settings-list">
@@ -153,7 +183,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 右侧：订阅状态和最近活动 -->
             <div class="profile-right">
                 <div class="profile-section">
@@ -178,7 +208,7 @@
                         <button class="btn-primary" onclick="window.location.href='subscription.html'">管理订阅</button>
                     </div>
                 </div>
-                
+
                 <div class="profile-section">
                     <h2>最近活动</h2>
                     <div class="activity-list">
@@ -212,7 +242,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="profile-section">
                     <h2>安全设置</h2>
                     <div class="security-list">
@@ -237,15 +267,22 @@
                             </div>
                             <button class="btn-text" onclick="manageAPI()">管理</button>
                         </div>
+                        <div class="security-item" style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px;">
+                            <div class="security-info">
+                                <div class="security-label" style="color: #dc3545;">退出登录</div>
+                                <div class="security-value" style="color: var(--text-secondary);">退出当前账号，返回登录页面</div>
+                            </div>
+                            <button class="btn-text" onclick="logout()" style="color: #dc3545;">退出</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script src="js/main.js"></script>
     <script src="js/subscription.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/developer.js"></script>
 </body>
 </html>
-

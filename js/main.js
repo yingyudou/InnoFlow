@@ -1,5 +1,17 @@
 // 主要 JavaScript 功能
 
+// 退出登录函数（全局）
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        // 清除所有本地存储的数据
+        sessionStorage.clear();
+        localStorage.removeItem('pluginDraft');
+
+        // 跳转到登录页面
+        window.location.href = 'index.html';
+    }
+}
+
 // 登录表单处理
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
@@ -10,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'dashboard.html';
         });
     }
-    
+
     // 初始化项目面板
     const projectGrid = document.getElementById('projectGrid');
     if (projectGrid) {
         initProjects();
     }
-    
+
     // 初始化工具面板
     const toolGrid = document.getElementById('toolGrid');
     if (toolGrid) {
@@ -98,15 +110,15 @@ const projectsData = [
 function initProjects() {
     const projectGrid = document.getElementById('projectGrid');
     const projectCount = document.getElementById('projectCount');
-    
+
     if (projectCount) {
         projectCount.textContent = projectsData.length;
     }
-    
+
     projectsData.forEach((project, index) => {
         const card = createProjectCard(project);
         projectGrid.appendChild(card);
-        
+
         // 添加延迟动画
         setTimeout(() => {
             card.style.opacity = '0';
@@ -127,7 +139,7 @@ function createProjectCard(project) {
     card.onclick = () => {
         window.location.href = 'project.html?id=' + project.id;
     };
-    
+
     card.innerHTML = `
         <div class="project-card-header">
             <h3>${project.name}</h3>
@@ -144,15 +156,15 @@ function createProjectCard(project) {
         </div>
         <div class="project-footer">
             <div class="project-owner">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='${project.ownerAvatar}'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E${project.ownerInitial}%3C/text%3E%3C/svg%3E" 
-                     alt="${project.owner}" 
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='${project.ownerAvatar}'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-family='Arial'%3E${project.ownerInitial}%3C/text%3E%3C/svg%3E"
+                     alt="${project.owner}"
                      class="owner-avatar">
                 <span class="owner-name">${project.owner}</span>
             </div>
             <span class="project-time">${project.updateTime}</span>
         </div>
     `;
-    
+
     return card;
 }
 
@@ -178,7 +190,7 @@ function formatDate(date) {
 function generateChineseName() {
     const surnames = ['张', '李', '王', '刘', '陈', '杨', '黄', '赵', '吴', '周'];
     const names = ['伟', '娜', '强', '敏', '静', '磊', '洋', '艳', '勇', '芳'];
-    return surnames[Math.floor(Math.random() * surnames.length)] + 
+    return surnames[Math.floor(Math.random() * surnames.length)] +
            names[Math.floor(Math.random() * names.length)];
 }
 
@@ -215,14 +227,14 @@ let installedTools = [
 function initTools() {
     const toolGrid = document.getElementById('toolGrid');
     if (!toolGrid) return;
-    
+
     toolGrid.innerHTML = '';
-    
+
     if (installedTools.length === 0) {
         toolGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">暂未安装任何工具，前往工具商店看看吧～</p>';
         return;
     }
-    
+
     installedTools.forEach(tool => {
         const toolCard = createToolCard(tool);
         toolGrid.appendChild(toolCard);
@@ -238,18 +250,18 @@ function createToolCard(tool) {
         if (e.target.classList.contains('tool-remove') || e.target.closest('.tool-remove')) {
             return;
         }
-        const projectName = document.getElementById('projectTitle') ? 
+        const projectName = document.getElementById('projectTitle') ?
             document.getElementById('projectTitle').textContent : '智能家居控制系统';
         window.location.href = tool.url + '?project=' + encodeURIComponent(projectName);
     };
-    
+
     card.innerHTML = `
         <button class="tool-remove" onclick="removeTool('${tool.id}', event)">&times;</button>
         <div class="tool-icon">${tool.icon}</div>
         <div class="tool-name">${tool.name}</div>
         <div class="tool-desc">${tool.description}</div>
     `;
-    
+
     return card;
 }
 
@@ -258,6 +270,19 @@ function removeTool(toolId, event) {
     event.stopPropagation();
     if (confirm('确定要卸载此工具吗？')) {
         installedTools = installedTools.filter(tool => tool.id !== toolId);
+
+        // 更新已安装插件数量
+        if (typeof getCurrentSubscription !== 'undefined') {
+            const sub = getCurrentSubscription();
+            if (sub && typeof sub.pluginsUsed !== 'undefined' && sub.pluginsUsed > 0) {
+                sub.pluginsUsed = sub.pluginsUsed - 1;
+                // 更新全局订阅状态
+                if (typeof currentSubscription !== 'undefined') {
+                    currentSubscription.pluginsUsed = sub.pluginsUsed;
+                }
+            }
+        }
+
         initTools();
     }
 }
@@ -268,10 +293,26 @@ function installTool(tool) {
         alert('该工具已安装');
         return;
     }
+
+    // 更新已安装插件数量
+    if (typeof getCurrentSubscription !== 'undefined') {
+        const sub = getCurrentSubscription();
+        if (sub && typeof sub.pluginsUsed !== 'undefined') {
+            sub.pluginsUsed = (sub.pluginsUsed || 0) + 1;
+            // 更新全局订阅状态
+            if (typeof currentSubscription !== 'undefined') {
+                currentSubscription.pluginsUsed = sub.pluginsUsed;
+            }
+        }
+    }
+
     installedTools.push(tool);
     initTools();
     alert(`工具 "${tool.name}" 安装成功！`);
 }
+
+// 导出全局函数
+window.logout = logout;
 
 // 处理新建项目（带限制检查）
 function handleNewProject() {
@@ -287,8 +328,7 @@ function handleNewProject() {
             return;
         }
     }
-    
+
     // 如果通过限制检查，继续创建项目
     alert('新建项目功能（演示版）\n\n提示：在真实系统中，这里会打开项目创建表单');
 }
-

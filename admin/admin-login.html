@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - InnoFlow</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-badge {
+            display: block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 auto 16px auto;
+            text-align: center;
+            width: fit-content;
+        }
+        .logo-section {
+            text-align: center;
+        }
+        .captcha-container {
+            display: flex;
+            gap: 12px;
+        }
+        .captcha-input {
+            flex: 1;
+        }
+        .captcha-display {
+            width: 120px;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .captcha-display:hover {
+            background: #e9ecef;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-section">
+                <img src="../assets/logo.svg" alt="InnoFlow Logo" class="login-logo">
+                <div class="admin-badge">🔐 管理员入口</div>
+                <h1 class="system-title">InnoFlow</h1>
+                <p class="system-subtitle">管理后台</p>
+            </div>
+
+            <div class="login-form">
+                <div class="welcome-text">
+                    <h2>管理员登录</h2>
+                    <p>请使用管理员账号登录</p>
+                </div>
+
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">管理员账号</label>
+                        <input type="text" id="adminUsername" placeholder="请输入管理员账号" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword">密码</label>
+                        <input type="password" id="adminPassword" placeholder="请输入密码" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminCode">验证码</label>
+                        <div class="captcha-container">
+                            <input type="text" id="adminCode" placeholder="请输入验证码" required class="captcha-input">
+                            <div id="captcha" class="captcha-display" onclick="generateCaptcha()">点击刷新</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-login">登录管理后台</button>
+
+                    <div class="form-footer">
+                        <a href="#" class="link-text">忘记密码？</a>
+                    </div>
+                </form>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                    <a href="../index.html" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">
+                        ← 返回用户登录
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-info">
+            <h3>管理后台功能</h3>
+            <ul class="feature-list">
+                <li>🔌 插件审核与管理</li>
+                <li>💰 定价协商与审核</li>
+                <li>👥 用户与开发者管理</li>
+                <li>💳 财务数据统计</li>
+                <li>⚙️ 系统配置与设置</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 生成验证码
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('captcha').textContent = code;
+            return code;
+        }
+
+        // 初始化验证码
+        let correctCaptcha = generateCaptcha();
+
+        // 登录表单处理
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const code = document.getElementById('adminCode').value;
+
+            // 验证码检查（演示版：跳过验证码验证）
+            // 真实系统中应该启用以下验证码检查
+            /*
+            if (code.toUpperCase() !== correctCaptcha) {
+                alert('验证码错误，请重新输入');
+                generateCaptcha();
+                document.getElementById('adminCode').value = '';
+                return;
+            }
+            */
+
+            // 模拟管理员登录验证（演示版：任意账号密码即可登录）
+            // 真实系统中应该连接后端验证
+            if (username && password) {
+                // 保存管理员登录状态
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminUsername', username);
+
+                // 跳转到管理员仪表盘
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('请输入管理员账号和密码');
+            }
+        });
+
+        // 点击验证码刷新
+        document.getElementById('captcha').addEventListener('click', function() {
+            correctCaptcha = generateCaptcha();
+        });
+    </script>
+</body>
+</html>

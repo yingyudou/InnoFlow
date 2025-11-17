@@ -19,13 +19,13 @@
             <button class="btn-secondary" onclick="window.location.href='dashboard.html'">返回主页</button>
         </div>
     </nav>
-    
+
     <div class="container">
         <!-- 当前订阅状态 -->
         <div class="subscription-status" id="subscriptionStatus">
             <!-- 动态生成 -->
         </div>
-        
+
         <!-- 功能对比表 -->
         <div class="comparison-section">
             <h2 style="text-align: center; margin-bottom: 30px;">功能对比</h2>
@@ -65,10 +65,10 @@
                             <td>✓ 无限</td>
                         </tr>
                         <tr>
-                            <td>高级插件</td>
-                            <td>✗</td>
-                            <td>✓ 全部</td>
-                            <td>✓ 全部</td>
+                            <td>插件数量</td>
+                            <td>5个</td>
+                            <td>✓ 无限</td>
+                            <td>✓ 无限</td>
                         </tr>
                         <tr>
                             <td>数据导出</td>
@@ -98,7 +98,7 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- 定价卡片 -->
         <div class="pricing-section">
             <h2 style="text-align: center; margin-bottom: 30px;">选择套餐</h2>
@@ -118,11 +118,12 @@
                         <li>✓ 50次 AI 调用/月</li>
                         <li>✓ 5个团队成员</li>
                         <li>✓ 1 GB 存储</li>
-                        <li>✓ 基础功能</li>
+                        <li>✓ 5个插件</li>
+                        <li>✓ 可购买付费插件</li>
                     </ul>
                     <button class="btn-secondary" disabled>当前套餐</button>
                 </div>
-                
+
                 <!-- 专业版 -->
                 <div class="pricing-card featured">
                     <div class="featured-badge">最受欢迎</div>
@@ -139,7 +140,8 @@
                         <li>✓ 500次 AI 调用/月</li>
                         <li>✓ 20个团队成员</li>
                         <li>✓ 50 GB 存储</li>
-                        <li>✓ 全部高级插件</li>
+                        <li>✓ 无限插件</li>
+                        <li>✓ 可购买付费插件</li>
                         <li>✓ 数据导出</li>
                         <li>✓ API 访问</li>
                     </ul>
@@ -148,7 +150,7 @@
                     </button>
                     <p class="pricing-note">按年付费仅 ¥899/年（省¥289）</p>
                 </div>
-                
+
                 <!-- 企业版 -->
                 <div class="pricing-card enterprise">
                     <div class="pricing-header">
@@ -164,7 +166,8 @@
                         <li>✓ 无限 AI 调用</li>
                         <li>✓ 无限团队成员</li>
                         <li>✓ 无限存储</li>
-                        <li>✓ 全部高级插件</li>
+                        <li>✓ 无限插件</li>
+                        <li>✓ 可购买付费插件</li>
                         <li>✓ 数据导出</li>
                         <li>✓ 无限 API 访问</li>
                         <li>✓ 专属支持</li>
@@ -177,7 +180,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 常见问题 -->
         <div class="faq-section">
             <h2 style="text-align: center; margin-bottom: 30px;">常见问题</h2>
@@ -191,7 +194,7 @@
                         <p>可以。您可以随时在账户设置中取消订阅，取消后将在当前计费周期结束时生效。</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>支持哪些支付方式？</span>
@@ -201,7 +204,7 @@
                         <p>支持支付宝、微信支付、银行卡等多种支付方式，安全便捷。</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>升级后可以立即使用新功能吗？</span>
@@ -211,7 +214,7 @@
                         <p>是的，升级后新功能会立即生效，无需等待。</p>
                     </div>
                 </div>
-                
+
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>按年付费有优惠吗？</span>
@@ -224,7 +227,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="js/main.js"></script>
     <script src="js/subscription.js"></script>
     <script>
@@ -236,4 +239,3 @@
     </script>
 </body>
 </html>
-
