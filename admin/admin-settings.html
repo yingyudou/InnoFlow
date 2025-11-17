@@ -70,24 +70,94 @@
         .admin-layout {
             display: flex;
         }
-        .coming-soon {
-            text-align: center;
-            padding: 80px 20px;
+        .settings-section {
             background: white;
+            padding: 24px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .coming-soon-icon {
-            font-size: 64px;
             margin-bottom: 24px;
         }
-        .coming-soon h2 {
-            margin: 0 0 16px 0;
+        .settings-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-info {
+            flex: 1;
+        }
+        .setting-label {
+            font-weight: 600;
+            margin-bottom: 4px;
             color: var(--text-primary);
         }
-        .coming-soon p {
+        .setting-desc {
+            font-size: 14px;
             color: var(--text-secondary);
-            margin: 0;
+        }
+        .setting-value {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .setting-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            width: 150px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .save-button {
+            margin-top: 24px;
+            text-align: right;
         }
     </style>
 </head>
@@ -129,14 +199,140 @@
         </div>
 
         <div class="admin-content">
-            <div class="coming-soon">
-                <div class="coming-soon-icon">⚙️</div>
-                <h2>系统设置</h2>
-                <p>此功能正在开发中，敬请期待...</p>
+            <h1 style="margin-bottom: 24px;">系统设置</h1>
+
+            <!-- 定价规则配置 -->
+            <div class="settings-section">
+                <h2>💰 定价规则配置</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">平台抽成比例</div>
+                        <div class="setting-desc">开发者收益 = 插件价格 × (1 - 抽成比例)</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="platformFee" value="30" min="0" max="50" step="1">
+                        <span>%</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">自动审核价格阈值</div>
+                        <div class="setting-desc">价格低于此值的插件可自动通过审核</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="autoApprovePrice" value="99" min="0" step="1">
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">人工审核价格阈值</div>
+                        <div class="setting-desc">价格高于此值的插件需要人工审核</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="manualReviewPrice" value="299" min="0" step="1">
+                        <span>元</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 审核规则配置 -->
+            <div class="settings-section">
+                <h2>🔍 审核规则配置</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">启用自动审核</div>
+                        <div class="setting-desc">符合条件的插件将自动通过审核</div>
+                    </div>
+                    <div class="setting-value">
+                        <label class="switch">
+                            <input type="checkbox" id="autoReviewEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">新开发者需要人工审核</div>
+                        <div class="setting-desc">首次上传插件的开发者需要人工审核</div>
+                    </div>
+                    <div class="setting-value">
+                        <label class="switch">
+                            <input type="checkbox" id="newDeveloperReview" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">审核超时提醒</div>
+                        <div class="setting-desc">超过此时间的待审核插件将发送提醒</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="reviewTimeout" value="48" min="1" step="1">
+                        <span>小时</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 插件限制配置 -->
+            <div class="settings-section">
+                <h2>🔌 插件限制配置</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">免费版插件数量限制</div>
+                        <div class="setting-desc">免费版用户最多可安装的插件数量</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="freePluginLimit" value="5" min="1" step="1">
+                        <span>个</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">专业版插件数量限制</div>
+                        <div class="setting-desc">专业版用户最多可安装的插件数量（-1表示无限）</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="proPluginLimit" value="-1" min="-1" step="1">
+                        <span>个</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提现配置 -->
+            <div class="settings-section">
+                <h2>💳 提现配置</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">最低提现金额</div>
+                        <div class="setting-desc">开发者申请提现的最低金额要求</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="minWithdrawal" value="100" min="0" step="10">
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">提现处理时间</div>
+                        <div class="setting-desc">提现申请的处理时间（工作日）</div>
+                    </div>
+                    <div class="setting-value">
+                        <input type="number" class="setting-input" id="withdrawalDays" value="3" min="1" step="1">
+                        <span>个工作日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 保存按钮 -->
+            <div class="save-button">
+                <button class="btn-primary" onclick="saveSettings()">保存设置</button>
             </div>
         </div>
     </div>
 
+    <script src="../js/admin.js"></script>
     <script>
         if (!sessionStorage.getItem('adminLoggedIn')) {
             window.location.href = 'admin-login.html';
@@ -151,6 +347,27 @@
             }
         }
         window.logout = logout;
+
+        // 保存设置
+        function saveSettings() {
+            const settings = {
+                platformFee: document.getElementById('platformFee').value,
+                autoApprovePrice: document.getElementById('autoApprovePrice').value,
+                manualReviewPrice: document.getElementById('manualReviewPrice').value,
+                autoReviewEnabled: document.getElementById('autoReviewEnabled').checked,
+                newDeveloperReview: document.getElementById('newDeveloperReview').checked,
+                reviewTimeout: document.getElementById('reviewTimeout').value,
+                freePluginLimit: document.getElementById('freePluginLimit').value,
+                proPluginLimit: document.getElementById('proPluginLimit').value,
+                minWithdrawal: document.getElementById('minWithdrawal').value,
+                withdrawalDays: document.getElementById('withdrawalDays').value
+            };
+
+            // 模拟保存
+            console.log('保存设置:', settings);
+            alert('✅ 设置已保存！\n\n注意：演示版设置不会实际生效，真实系统中需要连接后端API保存。');
+        }
+        window.saveSettings = saveSettings;
     </script>
 </body>
 </html>

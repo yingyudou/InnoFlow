@@ -70,24 +70,119 @@
         .admin-layout {
             display: flex;
         }
-        .coming-soon {
-            text-align: center;
-            padding: 80px 20px;
+        .finance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .finance-stat-card {
             background: white;
+            padding: 24px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .coming-soon-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
+        .finance-stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
-        .coming-soon h2 {
-            margin: 0 0 16px 0;
-            color: var(--text-primary);
-        }
-        .coming-soon p {
+        .finance-stat-title {
+            font-size: 14px;
             color: var(--text-secondary);
-            margin: 0;
+        }
+        .finance-stat-icon {
+            font-size: 32px;
+        }
+        .finance-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .finance-stat-change {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .finance-stat-change.positive {
+            color: #28a745;
+        }
+        .finance-stat-change.negative {
+            color: #dc3545;
+        }
+        .transaction-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .transaction-header {
+            display: grid;
+            grid-template-columns: 120px 1fr 120px 120px 120px 100px;
+            gap: 16px;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .transaction-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 120px 120px 120px 100px;
+            gap: 16px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+        .transaction-row:last-child {
+            border-bottom: none;
+        }
+        .transaction-type {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .type-sale {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        .type-withdrawal {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .type-refund {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .amount-positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .amount-negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .filter-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
         }
     </style>
 </head>
@@ -129,14 +224,78 @@
         </div>
 
         <div class="admin-content">
-            <div class="coming-soon">
-                <div class="coming-soon-icon">💳</div>
-                <h2>财务管理</h2>
-                <p>此功能正在开发中，敬请期待...</p>
+            <h1 style="margin-bottom: 24px;">财务管理</h1>
+
+            <!-- 财务统计 -->
+            <div class="finance-stats">
+                <div class="finance-stat-card">
+                    <div class="finance-stat-header">
+                        <div class="finance-stat-title">平台总收益</div>
+                        <div class="finance-stat-icon">💰</div>
+                    </div>
+                    <div class="finance-stat-value">¥45,230</div>
+                    <div class="finance-stat-change positive">较上月 +12.5%</div>
+                </div>
+                <div class="finance-stat-card">
+                    <div class="finance-stat-header">
+                        <div class="finance-stat-title">本月收益</div>
+                        <div class="finance-stat-icon">📈</div>
+                    </div>
+                    <div class="finance-stat-value">¥12,450</div>
+                    <div class="finance-stat-change positive">较上月 +8.3%</div>
+                </div>
+                <div class="finance-stat-card">
+                    <div class="finance-stat-header">
+                        <div class="finance-stat-title">开发者分成</div>
+                        <div class="finance-stat-icon">💵</div>
+                    </div>
+                    <div class="finance-stat-value">¥31,661</div>
+                    <div class="finance-stat-change">已支付 70%</div>
+                </div>
+                <div class="finance-stat-card">
+                    <div class="finance-stat-header">
+                        <div class="finance-stat-title">待审核提现</div>
+                        <div class="finance-stat-icon">⏳</div>
+                    </div>
+                    <div class="finance-stat-value">¥3,200</div>
+                    <div class="finance-stat-change">3 笔待处理</div>
+                </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+                <select class="filter-select" id="typeFilter" onchange="filterTransactions()">
+                    <option value="all">全部类型</option>
+                    <option value="sale">插件销售</option>
+                    <option value="withdrawal">提现</option>
+                    <option value="refund">退款</option>
+                </select>
+                <select class="filter-select" id="periodFilter" onchange="filterTransactions()">
+                    <option value="all">全部时间</option>
+                    <option value="today">今天</option>
+                    <option value="week">本周</option>
+                    <option value="month">本月</option>
+                </select>
+            </div>
+
+            <!-- 交易记录 -->
+            <div class="transaction-table">
+                <div class="transaction-header">
+                    <div>时间</div>
+                    <div>交易详情</div>
+                    <div>类型</div>
+                    <div>平台收益</div>
+                    <div>开发者收益</div>
+                    <div>状态</div>
+                </div>
+                <div id="transactionList">
+                    <!-- 动态生成 -->
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="../js/admin.js"></script>
     <script>
         if (!sessionStorage.getItem('adminLoggedIn')) {
             window.location.href = 'admin-login.html';
@@ -151,6 +310,85 @@
             }
         }
         window.logout = logout;
+
+        // 交易数据（模拟）
+        const transactionsData = [
+            { id: 1, time: '2025-11-02 14:30', plugin: 'AI代码审查', developer: 'TechFlow团队', type: 'sale', amount: 99, platformFee: 29.7, developerFee: 69.3, status: 'completed' },
+            { id: 2, time: '2025-11-02 10:15', plugin: 'API测试工具', developer: 'API Tools团队', type: 'sale', amount: 129, platformFee: 38.7, developerFee: 90.3, status: 'completed' },
+            { id: 3, time: '2025-11-01 16:45', plugin: '性能监控', developer: 'Metrics Lab', type: 'sale', amount: 79, platformFee: 23.7, developerFee: 55.3, status: 'completed' },
+            { id: 4, time: '2025-11-01 09:20', developer: 'TechFlow团队', type: 'withdrawal', amount: 500, platformFee: 0, developerFee: 500, status: 'pending' },
+            { id: 5, time: '2025-10-31 15:30', plugin: '测试自动化', developer: 'QA Pro', type: 'sale', amount: 149, platformFee: 44.7, developerFee: 104.3, status: 'completed' },
+            { id: 6, time: '2025-10-30 11:20', plugin: 'AI代码审查', developer: 'TechFlow团队', type: 'refund', amount: 99, platformFee: -29.7, developerFee: -69.3, status: 'completed' }
+        ];
+
+        // 渲染交易列表
+        function renderTransactions(transactions = transactionsData) {
+            const list = document.getElementById('transactionList');
+            if (transactions.length === 0) {
+                list.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-secondary);">暂无交易记录</div>';
+                return;
+            }
+
+            list.innerHTML = transactions.map(trans => {
+                const typeMap = {
+                    sale: { text: '插件销售', class: 'type-sale' },
+                    withdrawal: { text: '提现', class: 'type-withdrawal' },
+                    refund: { text: '退款', class: 'type-refund' }
+                };
+                const statusMap = {
+                    completed: '已完成',
+                    pending: '待处理',
+                    failed: '失败'
+                };
+
+                const type = typeMap[trans.type] || typeMap.sale;
+
+                return `
+                    <div class="transaction-row">
+                        <div style="font-size: 14px; color: var(--text-secondary);">${trans.time}</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">
+                                ${trans.plugin ? `插件: ${trans.plugin}` : '提现申请'}
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                                开发者: ${trans.developer}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="transaction-type ${type.class}">${type.text}</span>
+                        </div>
+                        <div class="${trans.platformFee >= 0 ? 'amount-positive' : 'amount-negative'}">
+                            ${trans.platformFee >= 0 ? '+' : ''}¥${trans.platformFee.toFixed(2)}
+                        </div>
+                        <div class="${trans.developerFee >= 0 ? 'amount-positive' : 'amount-negative'}">
+                            ${trans.developerFee >= 0 ? '+' : ''}¥${trans.developerFee.toFixed(2)}
+                        </div>
+                        <div style="font-size: 14px; color: var(--text-secondary);">
+                            ${statusMap[trans.status] || trans.status}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 筛选交易
+        function filterTransactions() {
+            const type = document.getElementById('typeFilter').value;
+            const period = document.getElementById('periodFilter').value;
+
+            let filtered = transactionsData.filter(trans => {
+                const matchType = type === 'all' || trans.type === type;
+                // 简单的时间筛选（演示）
+                const matchPeriod = period === 'all' || true; // 实际应该根据时间筛选
+                return matchType && matchPeriod;
+            });
+
+            renderTransactions(filtered);
+        }
+        window.filterTransactions = filterTransactions;
+
+        // 初始化
+        renderTransactions();
     </script>
 </body>
 </html>
