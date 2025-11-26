@@ -773,16 +773,21 @@ function analyzeProblem() {
         // 调用TRIZ引擎（底层）
         const analysis = analyzeProblemWithTRIZ(problemText);
 
+        // 理想解分析
+        const idealSolution = typeof analyzeIdealSolution !== 'undefined'
+            ? analyzeIdealSolution(problemText, analysis)
+            : null;
+
         // 展示结果（用户只看到AI分析，看不到TRIZ）
-        displayAnalysisResult(analysis);
+        displayAnalysisResult(analysis, idealSolution);
 
         // 基于方向生成想法
         generateIdeasFromDirections(analysis.directions);
     }, 1500);
 }
 
-// 展示分析结果
-function displayAnalysisResult(analysis) {
+// 展示分析结果（增强版：包含理想解分析）
+function displayAnalysisResult(analysis, idealSolution) {
     const resultDiv = document.getElementById('analysisResult');
 
     // 冲突点展示
@@ -793,6 +798,32 @@ function displayAnalysisResult(analysis) {
             </li>`
         ).join('')
         : '<li style="color: var(--text-secondary);">未检测到明显的技术矛盾</li>';
+
+    // 理想解分析展示
+    const idealSolutionSection = idealSolution ? `
+        <div style="margin-bottom: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 20px; color: white;">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                ✨ 理想解（IFR）分析
+            </h3>
+            <p style="margin-bottom: 16px; line-height: 1.8; opacity: 0.95;">
+                ${idealSolution.description}
+            </p>
+            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <strong style="display: block; margin-bottom: 8px;">理想解的关键特征：</strong>
+                <ul style="margin: 0; padding-left: 20px; opacity: 0.9;">
+                    ${idealSolution.keyPoints.map(point => `<li style="margin-bottom: 4px;">${point}</li>`).join('')}
+                </ul>
+            </div>
+            ${idealSolution.suggestions && idealSolution.suggestions.length > 0 ? `
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px;">
+                    <strong style="display: block; margin-bottom: 8px;">实现建议：</strong>
+                    <ul style="margin: 0; padding-left: 20px; opacity: 0.9;">
+                        ${idealSolution.suggestions.slice(0, 3).map(s => `<li style="margin-bottom: 4px;">${s.suggestion}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    ` : '';
 
     // 优化推荐顺序
     const optimizedDirections = optimizeDirectionRecommendation([...analysis.directions]);
@@ -829,6 +860,10 @@ function displayAnalysisResult(analysis) {
                                 onclick="toggleDirectionCompare('${dir.name}', ${dir.id})" title="添加到对比">
                             ⚖️ 对比
                         </button>
+                        <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px; background: transparent; border: 1px solid var(--border-color);"
+                                onclick="showTRIZPrinciple(${dir.id})" title="了解TRIZ原理">
+                            📚 TRIZ
+                        </button>
                     </div>
                 </div>
             </div>
@@ -837,6 +872,8 @@ function displayAnalysisResult(analysis) {
     }).join('');
 
     resultDiv.innerHTML = `
+        ${idealSolutionSection}
+
         <div style="margin-bottom: 24px;">
             <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                 🤖 AI 检测到的冲突点
@@ -1026,6 +1063,84 @@ function showDirectionCompare() {
     document.body.appendChild(modal);
 }
 
+// 显示TRIZ原理详情（教育功能）
+function showTRIZPrinciple(principleId) {
+    const trizPrinciples = window.TRIZ_PRINCIPLES || {};
+    const principle = trizPrinciples[principleId];
+    if (!principle) {
+        alert('未找到该TRIZ原理的详细信息');
+        return;
+    }
+
+    // 创建TRIZ原理详情模态框
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;';
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    };
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 12px; padding: 24px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                <div>
+                    <h2 style="font-size: 24px; font-weight: 600; margin: 0 0 8px 0; color: var(--primary-color);">
+                        TRIZ原理 ${principleId}: ${principle.name}
+                    </h2>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
+                        中性化表达：${principle.neutral}
+                    </p>
+                </div>
+                <button onclick="this.closest('.modal-overlay').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">📝 原理描述</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px;">
+                    ${principle.description}
+                </p>
+            </div>
+
+            ${principle.example ? `
+                <div style="margin-bottom: 24px; background: #f8f9fa; border-radius: 8px; padding: 16px;">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">💡 应用案例</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px;">
+                        ${principle.example}
+                    </p>
+                </div>
+            ` : ''}
+
+            ${principle.application ? `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">🎯 适用场景</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px;">
+                        ${principle.application}
+                    </p>
+                </div>
+            ` : ''}
+
+            <div style="background: #e3f2fd; border-left: 4px solid var(--primary-color); padding: 12px; border-radius: 4px; margin-bottom: 24px;">
+                <p style="margin: 0; font-size: 13px; color: #1976d2; line-height: 1.6;">
+                    <strong>💡 TRIZ小知识：</strong>这是TRIZ（发明问题解决理论）的40个创新原理之一。TRIZ是前苏联发明家根里奇·阿奇舒勒通过对大量专利分析总结出的系统化创新方法。
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn-primary" style="padding: 10px 20px; font-size: 14px;" onclick="exploreDirection('${principle.neutral}', ${principleId}); this.closest('.modal-overlay').remove();">
+                    探索此方向 →
+                </button>
+                <button class="btn-secondary" style="padding: 10px 20px; font-size: 14px;" onclick="this.closest('.modal-overlay').remove();">
+                    关闭
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
 // 显示方向详情
 function showDirectionDetail(directionName, directionId) {
     // 获取方向详细信息（从全局TRIZ引擎）
@@ -1100,6 +1215,9 @@ function showDirectionDetail(directionName, directionId) {
                 <button class="btn-secondary" style="padding: 10px 20px; font-size: 14px;" onclick="toggleDirectionCompare('${directionName}', ${directionId}); this.closest('.modal-overlay').remove();">
                     ⚖️ 添加到对比
                 </button>
+                <button class="btn-secondary" style="padding: 10px 20px; font-size: 14px;" onclick="showTRIZPrinciple(${directionId}); this.closest('.modal-overlay').remove();">
+                    📚 了解TRIZ原理
+                </button>
             </div>
         </div>
     `;
@@ -1107,10 +1225,14 @@ function showDirectionDetail(directionName, directionId) {
     document.body.appendChild(modal);
 }
 
-// 探索方向（生成想法）- 增强版：更自然的AI生成
+// 探索方向（生成想法）- 增强版：基于上下文动态生成
 function exploreDirection(directionName, directionId) {
     // 记录用户选择
     saveDirectionHistory(directionName, directionId);
+
+    // 获取当前问题上下文（如果存在）
+    const problemInput = document.getElementById('problemInput');
+    const problemContext = problemInput ? problemInput.value.trim() : '';
 
     // 基于方向生成想法
     const newIdeas = [];
@@ -1393,12 +1515,40 @@ function exploreDirection(directionName, directionId) {
     };
 
     // 获取当前方向的模板，如果没有则使用通用模板
-    const templates = ideaTemplates[directionName] || [
+    let templates = ideaTemplates[directionName] || [
         { title: `${directionName}方案 1`, desc: `通过${directionName}来解决当前问题，提升系统性能` },
         { title: `${directionName}方案 2`, desc: `采用${directionName}优化用户体验，降低系统复杂度` },
         { title: `${directionName}方案 3`, desc: `运用${directionName}提高系统可靠性，增强适应性` },
         { title: `${directionName}方案 4`, desc: `利用${directionName}降低成本，优化资源配置` }
     ];
+
+    // 基于问题上下文动态调整想法描述
+    if (problemContext && problemContext.length > 10) {
+        // 提取问题中的关键词
+        const contextKeywords = extractContextKeywords(problemContext);
+
+        // 为每个模板注入上下文信息
+        templates = templates.map(template => {
+            let enhancedDesc = template.desc;
+
+            // 如果描述中包含通用词汇，尝试替换为上下文相关词汇
+            if (contextKeywords.length > 0) {
+                const keyword = contextKeywords[0];
+                enhancedDesc = enhancedDesc.replace(/系统|问题|当前问题/g, keyword);
+            }
+
+            // 如果模板标题是通用的，也进行替换
+            let enhancedTitle = template.title;
+            if (enhancedTitle.includes('方案') && contextKeywords.length > 0) {
+                enhancedTitle = `${contextKeywords[0]}的${directionName}${enhancedTitle.replace(/方案.*/, '方案')}`;
+            }
+
+            return {
+                title: enhancedTitle,
+                desc: enhancedDesc
+            };
+        });
+    }
 
     // 随机选择4-5个想法（如果模板足够）
     const selectedTemplates = templates.length >= 4
@@ -1437,6 +1587,36 @@ function exploreDirection(directionName, directionId) {
     alert(`已基于"${directionName}"方向生成了 ${newIdeas.length} 个想法，请查看下方的气泡视图`);
 }
 
+// 提取上下文关键词（用于动态生成想法）
+function extractContextKeywords(text) {
+    // 提取名词和关键概念
+    const keywords = [];
+    const sentences = text.split(/[。，、；！？\n]/);
+
+    // 常见的技术和业务关键词
+    const techKeywords = ['系统', '应用', '平台', '服务', '功能', '性能', '数据', '用户', '界面', '接口', '架构', '模块'];
+
+    sentences.forEach(sentence => {
+        techKeywords.forEach(keyword => {
+            if (sentence.includes(keyword) && !keywords.includes(keyword)) {
+                keywords.push(keyword);
+            }
+        });
+
+        // 提取2-4字的名词短语
+        const nounPattern = /[\u4e00-\u9fa5]{2,4}/g;
+        let match;
+        while ((match = nounPattern.exec(sentence)) !== null && keywords.length < 5) {
+            const word = match[0];
+            if (!keywords.includes(word) && word.length >= 2) {
+                keywords.push(word);
+            }
+        }
+    });
+
+    return keywords.slice(0, 3); // 返回前3个关键词
+}
+
 // 基于方向生成想法（从分析结果调用）
 function generateIdeasFromDirections(directions) {
     // 这个方法会在分析完成后自动调用
@@ -1448,6 +1628,7 @@ function generateIdeasFromDirections(directions) {
 window.analyzeProblem = analyzeProblem;
 window.exploreDirection = exploreDirection;
 window.showDirectionDetail = showDirectionDetail;
+window.showTRIZPrinciple = showTRIZPrinciple;
 window.toggleDirectionCompare = toggleDirectionCompare;
 window.showDirectionCompare = showDirectionCompare;
 window.updateCompareUI = updateCompareUI;
