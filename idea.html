@@ -19,32 +19,54 @@
             <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
         </div>
     </nav>
-    
+
     <div class="container idea-page">
         <div class="page-header" style="margin-bottom: 20px;">
             <h1 id="projectTitle" style="font-size: 24px; margin-bottom: 4px;">智能家居控制系统</h1>
         </div>
+
+        <!-- AI 问题分析入口 -->
+        <div class="problem-analysis-section" style="background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">🔍 AI 问题分析</h2>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                描述你遇到的问题或想要改进的方向，AI 将为你分析冲突点并推荐探索方向
+            </p>
+            <textarea id="problemInput" placeholder="例如：智能家居系统响应速度慢，但增加功能会导致系统变复杂..."
+                      style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; resize: vertical; font-size: 14px; box-sizing: border-box; margin-bottom: 12px;"></textarea>
+            <button class="btn-primary" onclick="analyzeProblem()" style="padding: 12px 24px;">
+                🤖 AI 分析问题
+            </button>
+
+            <!-- 分析结果展示区 -->
+            <div id="analysisResult" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                <!-- 结果将由 JS 动态生成 -->
+            </div>
+        </div>
+
         <div class="idea-toolbar">
             <div class="search-box">
                 <input type="text" placeholder="搜索想法..." class="search-input">
                 <span class="search-icon">🔍</span>
             </div>
-            
+
             <div class="toolbar-actions">
                 <button class="btn-secondary" onclick="alert('添加 Idea 功能（演示版）')">
                     + 添加 Idea
+                </button>
+                <button class="btn-secondary" id="compareBtn" onclick="showDirectionCompare()" style="display: none;">
+                    ⚖️ 对比方向 (0)
                 </button>
                 <button class="btn-primary" id="clusterBtn">
                     🤖 AI 聚类
                 </button>
             </div>
         </div>
-        
+
         <div class="idea-content">
             <div class="idea-cluster-view">
                 <canvas id="clusterCanvas"></canvas>
             </div>
-            
+
             <div class="idea-detail-panel" id="detailPanel">
                 <div class="detail-empty">
                     <p>👈 点击气泡查看 Idea 详情</p>
@@ -52,9 +74,10 @@
             </div>
         </div>
     </div>
-    
+
     <script src="js/main.js"></script>
     <script src="js/subscription.js"></script>
+    <script src="js/triz-engine.js"></script>
     <script src="js/idea.js"></script>
     <script>
         const projectName = getUrlParameter('project') || '智能家居控制系统';
@@ -62,4 +85,3 @@
     </script>
 </body>
 </html>
-

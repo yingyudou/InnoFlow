@@ -155,6 +155,17 @@ function createStoreToolCard(tool) {
         ? `<div class="tool-price-tag">¥${tool.price}</div>`
         : `<div class="tool-price-tag free">免费</div>`;
 
+    // 安全标识
+    const securityBadge = typeof getSecurityBadge !== 'undefined'
+        ? (() => {
+            const badge = getSecurityBadge(tool.id);
+            return `<div class="security-badge" onclick="showSecurityDetails('${tool.id}'); event.stopPropagation();"
+                         style="position: absolute; top: 12px; left: 12px; background: ${badge.color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; z-index: 10; display: flex; align-items: center; gap: 4px;">
+                    ${badge.icon} ${badge.text}
+                  </div>`;
+        })()
+        : '';
+
     // 安装按钮
     let installButton = '';
     if (tool.isInstalled) {
@@ -167,8 +178,26 @@ function createStoreToolCard(tool) {
         installButton = `<button class="btn-primary" onclick="handleInstall('${tool.id}')">安装</button>`;
     }
 
+    // 评价按钮（已安装的工具可以评价）
+    const ratingButton = tool.isInstalled
+        ? `<button class="btn-secondary" onclick="showRatingModal('${tool.id}'); event.stopPropagation();" style="margin-top: 8px; width: 100%;">
+            ⭐ 评价
+          </button>`
+        : '';
+
+    // 评价信息（可点击查看详情）
+    const ratingInfo = typeof getRatingCount !== 'undefined' && getRatingCount(tool.id) > 0
+        ? `<div onclick="showRatingList('${tool.id}'); event.stopPropagation();" style="cursor: pointer; display: flex; align-items: center; gap: 4px; margin-top: 8px; color: var(--text-secondary); font-size: 13px;">
+            <span>⭐ ${tool.rating}</span>
+            <span>(${getRatingCount(tool.id)}条评价)</span>
+          </div>`
+        : `<div style="display: flex; align-items: center; gap: 4px; margin-top: 8px; color: var(--text-secondary); font-size: 13px;">
+            <span>⭐ ${tool.rating}</span>
+          </div>`;
+
     card.innerHTML = `
         ${priceTag}
+        ${securityBadge}
         <div class="store-tool-icon">${tool.icon}</div>
         <div class="store-tool-name">${tool.name}</div>
         <div class="store-tool-desc">${tool.description}</div>
@@ -178,11 +207,12 @@ function createStoreToolCard(tool) {
             </div>
             <div class="store-tool-stats">
                 <span>📥 ${tool.downloads} 次下载</span>
-                <span>⭐ ${tool.rating}</span>
             </div>
         </div>
+        ${ratingInfo}
         <div class="store-tool-version">版本: ${tool.version}</div>
         ${installButton}
+        ${ratingButton}
     `;
 
     return card;
@@ -222,9 +252,33 @@ function handleInstall(toolId) {
         });
         // 更新状态
         tool.isInstalled = true;
+
+        // 更新用户行为（用于推荐算法）
+        if (typeof updateUserBehavior !== 'undefined') {
+            updateUserBehavior('install', tool.id);
+        }
+
+        // 执行安全扫描
+        if (typeof performSecurityScan !== 'undefined') {
+            performSecurityScan(tool.id, tool);
+        }
+
+        // 发送通知
+        if (typeof addNotification !== 'undefined') {
+            addNotification('plugin', '插件安装成功', `"${tool.name}" 已成功安装到你的项目中`, 'project.html');
+        }
+
         // 重新检查状态并刷新
         checkInstalledStatus();
         initToolStore();
+
+        // 刷新推荐区域
+        if (typeof renderRecommendations !== 'undefined') {
+            const recommendationsSection = document.getElementById('recommendationsSection');
+            if (recommendationsSection) {
+                renderRecommendations('recommendationsSection');
+            }
+        }
     } else {
         alert(`工具 "${tool.name}" 安装成功！`);
         tool.isInstalled = true;
@@ -351,8 +405,32 @@ function confirmPurchase(toolId, modal) {
         }
 
         tool.isInstalled = true;
+
+        // 更新用户行为
+        if (typeof updateUserBehavior !== 'undefined') {
+            updateUserBehavior('install', tool.id);
+        }
+
+        // 执行安全扫描
+        if (typeof performSecurityScan !== 'undefined') {
+            performSecurityScan(tool.id, tool);
+        }
+
+        // 发送通知
+        if (typeof addNotification !== 'undefined') {
+            addNotification('plugin', '插件购买成功', `"${tool.name}" 已成功购买并安装`, 'project.html');
+        }
+
         checkInstalledStatus();
         initToolStore();
+
+        // 刷新推荐区域
+        if (typeof renderRecommendations !== 'undefined') {
+            const recommendationsSection = document.getElementById('recommendationsSection');
+            if (recommendationsSection) {
+                renderRecommendations('recommendationsSection');
+            }
+        }
 
         modal.remove();
         alert(`🎉 支付成功！\n\n工具 "${tool.name}" 已安装到您的项目中。`);

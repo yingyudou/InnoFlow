@@ -24,6 +24,7 @@
         </div>
 
         <div class="nav-right">
+            <div id="notificationIconContainer"></div>
             <button class="btn-secondary nav-subscribe-btn" onclick="window.location.href='subscription.html'" style="padding: 6px 14px; font-size: 13px;">
                 💎 订阅
             </button>
@@ -51,9 +52,18 @@
 
     <script src="js/subscription.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/notification.js"></script>
     <script>
         // 确保函数在全局可用
         window.handleNewProject = handleNewProject;
+
+        // 初始化通知图标
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof renderNotificationIcon !== 'undefined') {
+                renderNotificationIcon('notificationIconContainer');
+                updateNotificationBadge();
+            }
+        });
     </script>
 </body>
 </html>

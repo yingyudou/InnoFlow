@@ -612,7 +612,7 @@
     border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
-    z-index: 1;
+    z-index: 5;
 }
 
 .tool-price-tag.free {
@@ -1502,12 +1502,12 @@ input:checked + .slider:before {
     .profile-content {
         grid-template-columns: 1fr;
     }
-    
+
     .profile-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .profile-actions {
         width: 100%;
         justify-content: center;
@@ -1983,7 +1983,7 @@ input:checked + .slider:before {
     .stages-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .stage-timeline {
         display: none;
     }
@@ -1993,53 +1993,52 @@ input:checked + .slider:before {
     .login-container {
         flex-direction: column;
     }
-    
+
     .login-info {
         text-align: center;
     }
-    
+
     .project-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .stages-container {
         grid-template-columns: 1fr;
     }
-    
+
     .idea-toolbar {
         flex-wrap: wrap;
     }
-    
+
     .idea-toolbar .search-box {
         max-width: 100%;
         width: 100%;
         margin-bottom: 12px;
     }
-    
+
     .toolbar-actions {
         width: 100%;
         justify-content: flex-start;
     }
-    
+
     .idea-content {
         flex-direction: column;
         height: auto;
     }
-    
+
     .idea-cluster-view {
         height: 500px;
     }
-    
+
     .idea-detail-panel {
         width: 100%;
     }
-    
+
     .version-stats {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .action-buttons {
         grid-template-columns: 1fr;
     }
 }
-

@@ -733,3 +733,118 @@ body {
     line-height: 1.4;
 }
 
+/* 通知系统样式 */
+.notification-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.notification-icon-wrapper:hover {
+    background: rgba(91, 79, 232, 0.1);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #EF4444;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+}
+
+.notification-item {
+    transition: background 0.2s;
+}
+
+.notification-card {
+    transition: all 0.2s;
+}
+
+/* 评价系统样式 */
+.rating-input {
+    display: flex;
+    gap: 8px;
+    font-size: 32px;
+}
+
+.rating-input .star {
+    cursor: pointer;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+.rating-input .star:hover {
+    transform: scale(1.2);
+}
+
+.rating-stars {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.rating-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rating-item:last-child {
+    border-bottom: none;
+}
+
+/* 推荐系统样式 */
+.recommendation-badge {
+    position: absolute;
+    top: 48px;
+    right: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 4;
+}
+
+/* 安全扫描样式 */
+.security-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.2s;
+}
+
+.security-badge:hover {
+    transform: scale(1.05);
+}
+
+/* 按钮文本样式 */
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.btn-text:hover {
+    color: var(--secondary-color);
+}

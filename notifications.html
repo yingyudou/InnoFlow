@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知中心 - InnoFlow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="assets/logo.svg" alt="InnoFlow" class="nav-logo">
+            <span class="nav-title">InnoFlow - 通知中心</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-secondary" onclick="window.location.href='dashboard.html'">返回主页</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>通知中心</h1>
+                    <p class="page-subtitle">查看所有系统通知和消息</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-secondary" onclick="markAllAsRead()">全部标记为已读</button>
+                    <button class="btn-secondary" onclick="clearAllNotifications()">清空通知</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="notificationsList">
+            <!-- 通知列表将由 JS 动态生成 -->
+        </div>
+    </div>
+
+    <script src="js/notification.js"></script>
+    <script>
+        // 渲染通知列表
+        function renderNotificationList() {
+            const container = document.getElementById('notificationsList');
+            if (!container) return;
+
+            const unreadNotifications = notifications.filter(n => !n.read);
+            const readNotifications = notifications.filter(n => n.read);
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 80px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 24px;">🔔</div>
+                        <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">暂无通知</h2>
+                        <p style="color: var(--text-secondary);">当你收到新的通知时，它们会显示在这里</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                ${unreadNotifications.length > 0 ? `
+                    <div style="margin-bottom: 24px;">
+                        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">
+                            未读通知 (${unreadNotifications.length})
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${unreadNotifications.map(n => renderNotificationCard(n, false)).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${readNotifications.length > 0 ? `
+                    <div>
+                        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text-secondary);">
+                            已读通知 (${readNotifications.length})
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${readNotifications.map(n => renderNotificationCard(n, true)).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // 渲染通知卡片
+        function renderNotificationCard(notification, isRead) {
+            const typeConfig = notificationTypes[notification.type] || notificationTypes.system;
+
+            return `
+                <div class="notification-card"
+                     onclick="handleNotificationClick(${notification.id}, '${notification.link}')"
+                     style="background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; ${!isRead ? 'border-left: 4px solid ' + typeConfig.color + ';' : ''}"
+                     onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'"
+                     onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="display: flex; gap: 16px;">
+                        <div style="font-size: 32px; flex-shrink: 0;">${typeConfig.icon}</div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                                <div style="font-weight: 600; font-size: 16px; ${!isRead ? 'color: var(--text-primary);' : 'color: var(--text-secondary);'}">
+                                    ${notification.title}
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    ${!isRead ? '<div style="width: 10px; height: 10px; background: var(--primary-color); border-radius: 50%;"></div>' : ''}
+                                    <button class="btn-text" onclick="deleteNotification(${notification.id}); event.stopPropagation();"
+                                            style="padding: 4px 8px; font-size: 12px; color: var(--text-secondary);">
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.6;">
+                                ${notification.message}
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">
+                                ${notification.time}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 清空所有通知
+        function clearAllNotifications() {
+            if (confirm('确定要清空所有通知吗？')) {
+                notifications = [];
+                updateNotificationBadge();
+                renderNotificationList();
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotificationList();
+        });
+
+        // 导出函数
+        window.renderNotificationList = renderNotificationList;
+        window.clearAllNotifications = clearAllNotifications;
+    </script>
+</body>
+</html>

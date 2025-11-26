@@ -16,10 +16,11 @@
             <span class="nav-title">InnoFlow - 工具商店</span>
         </div>
         <div class="nav-right">
+            <div id="notificationIconContainer"></div>
             <button class="btn-secondary" onclick="window.location.href='project.html'">返回项目</button>
         </div>
     </nav>
-    
+
     <div class="container">
         <div class="page-header">
             <div class="section-header" style="margin-bottom: 0;">
@@ -31,14 +32,39 @@
                 </button>
             </div>
         </div>
-        
+
+        <!-- 推荐区域 -->
+        <div id="recommendationsSection" style="margin-bottom: 40px;"></div>
+
+        <div class="page-header" style="margin-bottom: 20px;">
+            <h2 style="font-size: 24px; font-weight: 600;">所有工具</h2>
+        </div>
+
         <div class="toolstore-grid" id="toolstoreGrid">
             <!-- 工具卡片将由 JS 动态生成 -->
         </div>
     </div>
-    
+
     <script src="js/main.js"></script>
+    <script src="js/rating.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/security.js"></script>
+    <script src="js/notification.js"></script>
     <script src="js/toolstore.js"></script>
+    <script>
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化推荐区域
+            if (typeof renderRecommendations !== 'undefined') {
+                renderRecommendations('recommendationsSection');
+            }
+
+            // 初始化通知图标
+            if (typeof renderNotificationIcon !== 'undefined') {
+                renderNotificationIcon('notificationIconContainer');
+                updateNotificationBadge();
+            }
+        });
+    </script>
 </body>
 </html>
-
