@@ -40,6 +40,13 @@
 - 功能标签管理
 - 草稿保存功能
 
+### 6. 开发者中心
+- **开发者中心主页**: `developer/developer-center.html`
+- 开发者统计信息（已上传工具、总下载量、评分等）
+- 工具管理（查看、编辑、删除已上传的工具）
+- 收益统计和数据分析
+- 开发者认证和等级系统
+
 ## 使用流程
 
 ### 管理员审核流程
@@ -126,6 +133,7 @@ admin/
 └── admin-settings.html       # 系统设置（占位）
 
 developer/
+├── developer-center.html      # 开发者中心主页
 └── upload-plugin.html        # 插件上传页面
 
 js/
@@ -157,4 +165,3 @@ js/
 - **管理员登录**: `admin/admin-login.html`
 - **主登录页管理员入口**: `index.html` 底部链接
 - **插件上传**: 工具商店"上传工具"按钮
-
